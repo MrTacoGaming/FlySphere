@@ -53,7 +53,7 @@ nav ul li a {
 
 /* Hero Section */
 .hero {
-  background-image: url('https://example.com/hero-image.jpg');
+  background-image: url('./images/hero-image.jpeg');
   background-size: cover;
   background-position: center;
   height: 500px;
