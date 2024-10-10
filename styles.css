@@ -51,6 +51,12 @@ nav ul li a {
   font-weight: 300;
 }
 
+a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 300;
+}
+
 /* Hero Section */
 .hero {
   background-image: url('./images/hero-image.jpeg');
