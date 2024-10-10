@@ -5,10 +5,31 @@
   box-sizing: border-box;
 }
 
+.announcement-banner {
+  background-color: #ffff00; /* Yellow background color */
+  color: #000; /* Black text color */
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
   line-height: 1.6;
   color: #333;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 300;
 }
 
 .container {
@@ -46,12 +67,6 @@ nav ul li {
 }
 
 nav ul li a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 300;
-}
-
-a {
   color: #fff;
   text-decoration: none;
   font-weight: 300;
