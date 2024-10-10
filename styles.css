@@ -19,7 +19,7 @@ body {
 
 /* Header Styles */
 header {
-  background-color: #003580;
+  background-color: #3475cf;
   color: #fff;
   padding: 1rem 0;
 }
@@ -127,7 +127,7 @@ nav ul li a {
 }
 
 .search-button {
-  background-color: #003580;
+  background-color: #3475cf;
   color: #fff;
   padding: 0.75rem 2rem;
   font-size: 1rem;
@@ -163,7 +163,7 @@ nav ul li a {
 
 .feature-item i {
   font-size: 3rem;
-  color: #003580;
+  color: #3475cf;
   margin-bottom: 1rem;
 }
 
@@ -173,7 +173,7 @@ nav ul li a {
 
 /* Footer Styles */
 footer {
-  background-color: #003580;
+  background-color: #3475cf;
   color: #fff;
   padding: 3rem 0 1rem;
 }
