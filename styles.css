@@ -56,7 +56,7 @@ nav ul li a {
   background-image: url('./images/hero-image.jpeg');
   background-size: cover;
   background-position: center;
-  height: 500px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
