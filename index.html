@@ -177,13 +177,16 @@
         const body = document.body;
         const navLinks = document.querySelector('.nav-links');
         const hamburger = document.createElement('div');
-        const countdownTimer = document.getElementById('countdown-timer');
-
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+    
         // Preloader
         window.addEventListener('load', () => {
             document.getElementById('preloader').style.display = 'none';
         });
-
+    
         // Hamburger setup
         hamburger.classList.add('hamburger');
         hamburger.innerHTML = `
@@ -192,7 +195,7 @@
             <div class="bar"></div>
         `;
         document.querySelector('nav').appendChild(hamburger);
-
+    
         // Dark mode setup
         function setTheme() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -209,23 +212,41 @@
             body.classList.toggle('dark-mode');
             localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
         });
-
+    
         // Hamburger toggle
         hamburger.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             hamburger.classList.toggle('active');
         });
-
+    
         // Countdown
-        const eventDate = new Date('April 1, 2025 00:00:00').getTime();
-        setInterval(() => {
+        const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime(); // CET is UTC+1
+        function updateCountdown() {
             const now = new Date().getTime();
             const distance = eventDate - now;
+    
+            if (distance < 0) {
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minutesEl.textContent = '00';
+                secondsEl.textContent = '00';
+                document.querySelector('.countdown h3').textContent = 'Flight Has Launched!';
+                return;
+            }
+    
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            countdownTimer.textContent = `${days}d ${hours}h`;
-        }, 1000);
-
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+            daysEl.textContent = String(days).padStart(2, '0');
+            hoursEl.textContent = String(hours).padStart(2, '0');
+            minutesEl.textContent = String(minutes).padStart(2, '0');
+            secondsEl.textContent = String(seconds).padStart(2, '0');
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    
         // Contact form handling
         const contactForm = document.querySelector('#contact form');
         contactForm.addEventListener('submit', async (e) => {
