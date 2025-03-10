@@ -239,6 +239,17 @@ footer {
     padding: 20px;
 }
 
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #FFD700;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     nav {
