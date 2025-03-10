@@ -133,27 +133,5 @@
         <p>© 2025 FlySphere - Your Virtual Airline on Roblox</p>
     </footer>
 
-    <script>
-        const plane = document.querySelector('.plane-animation');
-        let animationDuration = 10; // Sekunden
-
-        function updatePlaneAnimation() {
-            const windowWidth = window.innerWidth;
-            const planeWidth = plane.offsetWidth;
-            const startPosition = -planeWidth;
-            const endPosition = windowWidth + planeWidth;
-
-            plane.style.animation = 'none'; // Animation zurücksetzen
-            void plane.offsetWidth; // Trigger Reflow
-            plane.style.left = `${startPosition}px`;
-            plane.style.animation = `fly ${animationDuration}s infinite linear`;
-        }
-
-        // Nur ausführen, wenn JavaScript verfügbar ist
-        if (plane) {
-            updatePlaneAnimation();
-            window.addEventListener('resize', updatePlaneAnimation);
-        }
-    </script>
 </body>
 </html>
