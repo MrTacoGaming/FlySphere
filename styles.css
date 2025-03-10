@@ -8,7 +8,6 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Dark Mode */
 body.dark-mode {
     background-color: #1A1A2E;
     color: #E0E0E0;
@@ -58,33 +57,267 @@ body.dark-mode nav {
     color: #FFD700;
 }
 
-/* Theme Toggle Button */
+/* Theme Toggle */
 .theme-toggle {
     background: none;
     border: none;
     cursor: pointer;
     padding: 5px;
     font-size: 20px;
+    color: white;
+    transition: color 0.3s;
 }
 
-.theme-toggle .bulb {
-    display: inline-block;
+.theme-toggle:hover {
+    color: #FFD700;
+}
+
+body.dark-mode .theme-toggle .fa-sun {
+    display: none;
+}
+
+body.dark-mode .theme-toggle::after {
+    content: '\f186'; /* Moon icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
 }
 
 /* Hero Section */
 header {
     position: relative;
-    height: 300px; /* Reduced for mobile */
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: white;
+    background-image: url('hero-fallback.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
-/* Rest of your existing styles... */
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
 
-/* Improved Mobile Design */
+.hero {
+    z-index: 1;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin: 0;
+}
+
+.hero p {
+    font-size: 20px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 15px 40px;
+    background-color: #FFD700;
+    color: #003087;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #FFC107;
+}
+
+.small-cta {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FFD700;
+    color: #003087;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.small-cta:hover {
+    background-color: #FFC107;
+}
+
+/* Sections */
+section {
+    padding: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #003087;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+body.dark-mode h2 {
+    color: #FFD700;
+}
+
+/* Features */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+
+.feature-item img {
+    width: 60px;
+    height: 60px;
+}
+
+.feature-item h3 {
+    color: #003087;
+    margin: 15px 0;
+}
+
+body.dark-mode .feature-item h3 {
+    color: #FFD700;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+}
+
+.stat-item h3 {
+    font-size: 36px;
+    color: #003087;
+    margin: 0;
+}
+
+body.dark-mode .stat-item h3 {
+    color: #FFD700;
+}
+
+/* Updates */
+.update-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.update-item {
+    flex: 1 1 300px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .update-item {
+    background-color: #2D2D44;
+}
+
+/* Gallery */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.gallery-grid img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Community Button */
+.community-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #7289DA;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.community-button:hover {
+    background-color: #5A6EBB;
+}
+
+/* Contact Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+input, textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    cursor: pointer;
+}
+
+/* Footer */
+footer {
+    background-color: #003087;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+body.dark-mode footer {
+    background-color: #0F0F1A;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a.footer-links {
+    color: white !important;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+footer a.footer-links:hover {
+    color: #FFD700 !important;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+}
+
+.hamburger .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+
+/* Mobile Design */
 @media (max-width: 768px) {
     body {
         font-size: 14px;
@@ -100,7 +333,7 @@ header {
     }
 
     .nav-links {
-        display: none; /* Hide by default on mobile */
+        display: none;
         width: 100%;
         flex-direction: column;
         text-align: center;
@@ -116,7 +349,7 @@ header {
     }
 
     .nav-links.active {
-        display: flex; /* Show when active */
+        display: flex;
     }
 
     .nav-links li {
@@ -125,23 +358,26 @@ header {
 
     .theme-toggle {
         position: absolute;
-        right: 10px;
+        right: 50px;
         top: 15px;
     }
 
-    /* Hamburger menu */
     .hamburger {
         display: block;
         cursor: pointer;
         padding: 5px;
     }
 
-    .hamburger .bar {
-        width: 25px;
-        height: 3px;
-        background-color: white;
-        margin: 5px 0;
-        transition: 0.3s;
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
     }
 
     .hero h1 {
@@ -150,6 +386,10 @@ header {
 
     .hero p {
         font-size: 14px;
+    }
+
+    header {
+        height: 250px;
     }
 
     .cta-button {
@@ -172,33 +412,4 @@ header {
     form {
         max-width: 100%;
     }
-}
-
-/* Rest of your existing styles remain largely unchanged... */
-
-/* Footer */
-footer {
-    background-color: #003087;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-body.dark-mode footer {
-    background-color: #0F0F1A;
-}
-
-footer p {
-    margin: 0;
-}
-
-.footer-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-.footer-links a:hover {
-    color: #FFD700;
 }
