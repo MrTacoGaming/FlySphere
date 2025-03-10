@@ -23,6 +23,9 @@
             <li><a href="#play">Play</a></li>
             <li><a href="#community">Community</a></li>
         </ul>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <span class="bulb">💡</span>
+        </button>
     </nav>
 
     <header id="home">
@@ -130,8 +133,57 @@
     </section>
 
     <footer>
-        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> | Your Virtual Airline on Roblox</p>
     </footer>
+
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+        const navLinks = document.querySelector('.nav-links');
+    
+        // Add hamburger menu HTML dynamically
+        const hamburger = document.createElement('div');
+        hamburger.classList.add('hamburger');
+        hamburger.innerHTML = `
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        `;
+        document.querySelector('nav').appendChild(hamburger);
+    
+        // Check system preference for dark mode
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        if (prefersDark.matches) {
+            body.classList.add('dark-mode');
+        }
+    
+        // Listen for system theme changes
+        prefersDark.addEventListener('change', (e) => {
+            if (e.matches) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        });
+    
+        // Manual toggle
+        toggleButton.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+    
+        // Check for manual override in localStorage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.toggle('dark-mode', savedTheme === 'dark');
+        }
+    
+        // Hamburger menu toggle
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+    </script>
 
 </body>
 </html>
