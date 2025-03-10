@@ -6,19 +6,29 @@ body {
     color: #333;
     line-height: 1.6;
 }
-
+/* Mobile view (screens smaller than 768px) */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+        padding: 10px;
+    }
+    .container {
+        width: 100%;
+        flex-direction: column; /* Stack elements vertically */
+    }
+}
 /* Plane Animation - Fallback für No-JS */
-@keyframes fly {
-    0% { transform: translateX(-100px); }
-    100% { transform: translateX(calc(100vw + 100px)); }
-}
-.plane-animation {
-    position: fixed;
-    top: 150px;
-    width: 50px;
-    animation: fly 10s infinite linear; /* Fallback-Animation */
-    z-index: 100;
-}
+/*@keyframes fly {
+/*    0% { transform: translateX(-100px); }
+/*    100% { transform: translateX(calc(100vw + 100px)); }
+/*}
+/*.plane-animation {
+/*    position: fixed;
+/*    top: 150px;
+/*    width: 50px;
+/*    animation: fly 10s infinite linear; /* Fallback-Animation */
+/*    z-index: 100;
+/*}*/
 
 /* Navigation */
 nav {
