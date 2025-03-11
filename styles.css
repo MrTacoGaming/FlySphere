@@ -186,13 +186,16 @@ header {
 .hero h1 {
     font-size: 48px;
     margin: 0;
-    animation: fadeInDown 1.5s ease-in-out;
+    opacity: 0; /* Start hidden, animated via JS */
 }
 
 .hero p {
     font-size: 20px;
-    animation: fadeInUp 1.5s ease-in-out 0.5s;
-    animation-fill-mode: both;
+    opacity: 0; /* Start hidden, animated via JS */
+}
+
+.hero .cta-button {
+    opacity: 0; /* Start hidden, animated via JS */
 }
 
 @keyframes fadeInDown {
@@ -385,7 +388,7 @@ html.dark-mode .countdown-timer {
     max-width: 100%;
 }
 
-/* FIDS (Flight Information Display System) */
+/* FIDS */
 .fids {
     flex: 1 1 300px;
     background-color: #fff;
@@ -442,7 +445,6 @@ html.dark-mode #fids-table tr:nth-child(odd) {
     to { opacity: 1; }
 }
 
-/* Status colors */
 .on-time { color: #28A745; }
 .delayed { color: #DC3545; }
 .boarding { color: #FFC107; }
@@ -510,9 +512,55 @@ html.dark-mode .leaderboard {
     background-color: #2D2D44;
 }
 
-.leaderboard ul {
-    list-style: none;
-    padding: 0;
+.leaderboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #F5F7FA;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+html.dark-mode .leaderboard-item {
+    background: #1A1A2E;
+}
+
+.leaderboard-item:hover {
+    transform: scale(1.02);
+}
+
+.leaderboard-item.top-pilot {
+    background: linear-gradient(45deg, #FFD700, #FFC107);
+    color: #003087;
+    font-weight: bold;
+}
+
+html.dark-mode .leaderboard-item.top-pilot {
+    color: #0F0F1A;
+}
+
+.leaderboard-item .rank {
+    font-size: 18px;
+    width: 10%;
+    text-align: center;
+}
+
+.leaderboard-item .name {
+    font-size: 16px;
+    width: 60%;
+}
+
+.leaderboard-item .flights {
+    font-size: 14px;
+    width: 30%;
+    text-align: right;
 }
 
 /* Contact Form */
@@ -693,6 +741,23 @@ a:focus, button:focus {
     #fids-table th,
     #fids-table td {
         padding: 8px;
+    }
+
+    .leaderboard-item {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .leaderboard-item .rank {
+        width: 15%;
+    }
+
+    .leaderboard-item .name {
+        width: 55%;
+    }
+
+    .leaderboard-item .flights {
+        width: 30%;
     }
 
     section {

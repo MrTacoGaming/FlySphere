@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
-        // Run this immediately to set the theme before rendering
         (function() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const savedTheme = localStorage.getItem('theme');
@@ -124,7 +123,6 @@
             <div class="countdown">
                 <h3>Inaugural Flight Countdown</h3>
                 <div class="countdown-timer" id="countdown-timer">
-                    <!-- Desktop View -->
                     <div class="desktop-countdown">
                         <div class="time-unit">
                             <span id="days">00</span>
@@ -143,7 +141,6 @@
                             <p>Seconds</p>
                         </div>
                     </div>
-                    <!-- Mobile View -->
                     <div class="mobile-countdown">
                         <svg width="200" height="200" viewBox="0 0 200 200">
                             <circle cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="days-circle"/>
@@ -211,10 +208,23 @@
         <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
         <div class="leaderboard">
             <h3>Top Pilots</h3>
-            <ul>
-                <li>1. FlyMaster - 500 flights</li>
-                <li>2. WingKing - 450 flights</li>
-            </ul>
+            <div class="leaderboard-grid">
+                <div class="leaderboard-item top-pilot">
+                    <span class="rank">1</span>
+                    <span class="name">FlyMaster</span>
+                    <span class="flights">500 Flights</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="rank">2</span>
+                    <span class="name">WingKing</span>
+                    <span class="flights">450 Flights</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="rank">3</span>
+                    <span class="name">SkyAce</span>
+                    <span class="flights">400 Flights</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -251,15 +261,22 @@
         const mobileMinutes = document.getElementById('mobile-minutes');
         const mobileSeconds = document.getElementById('mobile-seconds');
         const fidsBody = document.getElementById('fids-body');
+        const heroTitle = document.querySelector('.hero h1');
+        const heroText = document.querySelector('.hero p');
+        const heroButton = document.querySelector('.hero .cta-button');
 
-        // Preloader fade-out
+        // Preloader and hero animation
         window.addEventListener('load', () => {
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.style.display = 'none';
+                    // Start hero animations after preloader fades out
+                    heroTitle.style.animation = 'fadeInDown 1.5s ease-in-out forwards';
+                    heroText.style.animation = 'fadeInUp 1.5s ease-in-out 0.5s forwards';
+                    heroButton.style.animation = 'fadeInUp 1.5s ease-in-out 0.7s forwards';
                 }, 500); // Fade-out duration
-            }, 1000); // Show for 1 second
+            }, 1000); // Show preloader for 1 second
         });
 
         // Hamburger setup
@@ -294,7 +311,7 @@
         });
 
         // Countdown
-        const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime(); // CET is UTC+1
+        const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime();
         const totalDays = Math.ceil((eventDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
         function updateCountdown() {
             const now = new Date().getTime();
@@ -344,7 +361,7 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
-        // FIDS (Flight Information Display System)
+        // FIDS
         const flightData = [
             { flight: 'FS101', destination: 'Dresden', status: 'On Time', time: '14:30' },
             { flight: 'FS102', destination: 'Berlin', status: 'Delayed', time: '15:00' },
