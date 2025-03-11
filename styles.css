@@ -185,7 +185,7 @@ header {
 }
 
 html.dark-mode .slide {
-    filter: brightness(70%); /* Dim images in dark mode */
+    filter: brightness(50%); /* Dim images in dark mode */
 }
 
 .slide.active {
