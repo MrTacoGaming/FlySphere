@@ -82,7 +82,7 @@
         <h2>FlySphere in Numbers</h2>
         <div class="stats-grid">
             <div class="stat-item">
-                <h3>...+</h3>
+                <h3>+++</h3>
                 <p>Flights Launched</p>
             </div>
             <div class="stat-item">
@@ -90,7 +90,7 @@
                 <p>Airports to Explore</p>
             </div>
             <div class="stat-item">
-                <h3>... +</h3>
+                <h3>+++</h3>
                 <p>Passengers Transported</p>
             </div>
         </div>
@@ -110,21 +110,38 @@
             <div class="countdown">
                 <h3>Inaugural Flight Countdown</h3>
                 <div class="countdown-timer" id="countdown-timer">
-                    <div class="time-unit">
-                        <span id="days">00</span>
-                        <p>Days</p>
+                    <!-- Desktop View -->
+                    <div class="desktop-countdown">
+                        <div class="time-unit">
+                            <span id="days">00</span>
+                            <p>Days</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="hours">00</span>
+                            <p>Hours</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="minutes">00</span>
+                            <p>Minutes</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="seconds">00</span>
+                            <p>Seconds</p>
+                        </div>
                     </div>
-                    <div class="time-unit">
-                        <span id="hours">00</span>
-                        <p>Hours</p>
-                    </div>
-                    <div class="time-unit">
-                        <span id="minutes">00</span>
-                        <p>Minutes</p>
-                    </div>
-                    <div class="time-unit">
-                        <span id="seconds">00</span>
-                        <p>Seconds</p>
+                    <!-- Mobile View -->
+                    <div class="mobile-countdown">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="10" opacity="0.2"/>
+                            <circle id="days-circle" cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="10" stroke-dasharray="565.48" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                            <circle id="hours-circle" cx="100" cy="100" r="70" fill="none" stroke="#FFD700" stroke-width="10" stroke-dasharray="439.82" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                            <circle id="minutes-circle" cx="100" cy="100" r="50" fill="none" stroke="#FFD700" stroke-width="10" stroke-dasharray="314.16" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                            <circle id="seconds-circle" cx="100" cy="100" r="30" fill="none" stroke="#FFD700" stroke-width="10" stroke-dasharray="188.49" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                            <text id="mobile-days" x="100" y="80" text-anchor="middle" fill="white" font-size="20">00d</text>
+                            <text id="mobile-hours" x="100" y="105" text-anchor="middle" fill="white" font-size="20">00h</text>
+                            <text id="mobile-minutes" x="100" y="130" text-anchor="middle" fill="white" font-size="20">00m</text>
+                            <text id="mobile-seconds" x="100" y="155" text-anchor="middle" fill="white" font-size="20">00s</text>
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -196,6 +213,14 @@
         const hoursEl = document.getElementById('hours');
         const minutesEl = document.getElementById('minutes');
         const secondsEl = document.getElementById('seconds');
+        const daysCircle = document.getElementById('days-circle');
+        const hoursCircle = document.getElementById('hours-circle');
+        const minutesCircle = document.getElementById('minutes-circle');
+        const secondsCircle = document.getElementById('seconds-circle');
+        const mobileDays = document.getElementById('mobile-days');
+        const mobileHours = document.getElementById('mobile-hours');
+        const mobileMinutes = document.getElementById('mobile-minutes');
+        const mobileSeconds = document.getElementById('mobile-seconds');
 
         // Preloader
         window.addEventListener('load', () => {
@@ -236,6 +261,7 @@
 
         // Countdown
         const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime(); // CET is UTC+1
+        const totalDays = Math.ceil((eventDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = eventDate - now;
@@ -245,6 +271,14 @@
                 hoursEl.textContent = '00';
                 minutesEl.textContent = '00';
                 secondsEl.textContent = '00';
+                mobileDays.textContent = '00d';
+                mobileHours.textContent = '00h';
+                mobileMinutes.textContent = '00m';
+                mobileSeconds.textContent = '00s';
+                daysCircle.style.strokeDashoffset = '565.48';
+                hoursCircle.style.strokeDashoffset = '439.82';
+                minutesCircle.style.strokeDashoffset = '314.16';
+                secondsCircle.style.strokeDashoffset = '188.49';
                 document.querySelector('.countdown h3').textContent = 'Flight Has Launched!';
                 return;
             }
@@ -254,10 +288,27 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
+            // Desktop
             daysEl.textContent = String(days).padStart(2, '0');
             hoursEl.textContent = String(hours).padStart(2, '0');
             minutesEl.textContent = String(minutes).padStart(2, '0');
             secondsEl.textContent = String(seconds).padStart(2, '0');
+
+            // Mobile
+            mobileDays.textContent = `${String(days).padStart(2, '0')}d`;
+            mobileHours.textContent = `${String(hours).padStart(2, '0')}h`;
+            mobileMinutes.textContent = `${String(minutes).padStart(2, '0')}m`;
+            mobileSeconds.textContent = `${String(seconds).padStart(2, '0')}s`;
+
+            // Graphical circles (mobile)
+            const daysOffset = 565.48 * (1 - days / totalDays);
+            const hoursOffset = 439.82 * (1 - hours / 24);
+            const minutesOffset = 314.16 * (1 - minutes / 60);
+            const secondsOffset = 188.49 * (1 - seconds / 60);
+            daysCircle.style.strokeDashoffset = daysOffset;
+            hoursCircle.style.strokeDashoffset = hoursOffset;
+            minutesCircle.style.strokeDashoffset = minutesOffset;
+            secondsCircle.style.strokeDashoffset = secondsOffset;
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);
