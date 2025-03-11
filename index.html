@@ -36,8 +36,6 @@
         <video autoplay muted loop class="hero-video">
             <source src="flysphere-trailer.mp4" type="video/mp4">
         </video>
-        <!-- Optional YouTube embed (uncomment and replace YOUR_VIDEO_ID if desired) -->
-        <!-- <iframe class="hero-video" src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
         <div class="hero">
             <h1>Welcome Aboard FlySphere</h1>
             <p>Experience the freedom of the skies in our Roblox Airplay Simulator</p>
@@ -107,11 +105,28 @@
             </div>
             <div class="update-item">
                 <h3>Event: Inaugural Flight</h3>
-                <p><strong>Apr 1, 2025</strong> - Experience the first public flight ever!</p>
+                <p><strong>Apr 5, 2025, 4:00 PM CET</strong> - Join us for the first public flight!</p>
             </div>
             <div class="countdown">
                 <h3>Inaugural Flight Countdown</h3>
-                <p id="countdown-timer"></p>
+                <div class="countdown-timer" id="countdown-timer">
+                    <div class="time-unit">
+                        <span id="days">00</span>
+                        <p>Days</p>
+                    </div>
+                    <div class="time-unit">
+                        <span id="hours">00</span>
+                        <p>Hours</p>
+                    </div>
+                    <div class="time-unit">
+                        <span id="minutes">00</span>
+                        <p>Minutes</p>
+                    </div>
+                    <div class="time-unit">
+                        <span id="seconds">00</span>
+                        <p>Seconds</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -181,12 +196,12 @@
         const hoursEl = document.getElementById('hours');
         const minutesEl = document.getElementById('minutes');
         const secondsEl = document.getElementById('seconds');
-    
+
         // Preloader
         window.addEventListener('load', () => {
             document.getElementById('preloader').style.display = 'none';
         });
-    
+
         // Hamburger setup
         hamburger.classList.add('hamburger');
         hamburger.innerHTML = `
@@ -195,7 +210,7 @@
             <div class="bar"></div>
         `;
         document.querySelector('nav').appendChild(hamburger);
-    
+
         // Dark mode setup
         function setTheme() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -212,19 +227,19 @@
             body.classList.toggle('dark-mode');
             localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
         });
-    
+
         // Hamburger toggle
         hamburger.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             hamburger.classList.toggle('active');
         });
-    
+
         // Countdown
         const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime(); // CET is UTC+1
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = eventDate - now;
-    
+
             if (distance < 0) {
                 daysEl.textContent = '00';
                 hoursEl.textContent = '00';
@@ -233,12 +248,12 @@
                 document.querySelector('.countdown h3').textContent = 'Flight Has Launched!';
                 return;
             }
-    
+
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
+
             daysEl.textContent = String(days).padStart(2, '0');
             hoursEl.textContent = String(hours).padStart(2, '0');
             minutesEl.textContent = String(minutes).padStart(2, '0');
@@ -246,7 +261,7 @@
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);
-    
+
         // Contact form handling
         const contactForm = document.querySelector('#contact form');
         contactForm.addEventListener('submit', async (e) => {
