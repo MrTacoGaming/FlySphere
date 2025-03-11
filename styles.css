@@ -526,10 +526,12 @@ html.dark-mode .leaderboard {
     background: #F5F7FA;
     border-radius: 8px;
     transition: transform 0.3s;
+    color: #333; /* Explicitly set for light mode */
 }
 
 html.dark-mode .leaderboard-item {
     background: #1A1A2E;
+    color: #E0E0E0; /* Bright text for dark mode */
 }
 
 .leaderboard-item:hover {
@@ -538,12 +540,13 @@ html.dark-mode .leaderboard-item {
 
 .leaderboard-item.top-pilot {
     background: linear-gradient(45deg, #FFD700, #FFC107);
-    color: #003087;
+    color: #003087; /* Dark blue text for contrast in light mode */
     font-weight: bold;
 }
 
 html.dark-mode .leaderboard-item.top-pilot {
-    color: #0F0F1A;
+    background: linear-gradient(45deg, #FFD700, #DAA520); /* Slightly darker gold for dark mode */
+    color: #0F0F1A; /* Very dark blue for contrast */
 }
 
 .leaderboard-item .rank {
