@@ -2,17 +2,15 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #E6F0FA 0%, #F5F7FA 100%); /* Sky gradient */
+    background-color: #F5F7FA;
     color: #333;
     line-height: 1.6;
-    transition: background 0.3s, color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
     cursor: url('plane-cursor.png'), auto; /* Optional: add plane-cursor.png */
-    position: relative;
-    overflow-x: hidden;
 }
 
 body.dark-mode {
-    background: linear-gradient(to bottom, #0F0F1A 0%, #1A1A2E 100%);
+    background-color: #1A1A2E;
     color: #E0E0E0;
 }
 
@@ -39,22 +37,9 @@ body.dark-mode {
     animation: spin 1s linear infinite;
 }
 
-.plane-trail {
-    position: absolute;
-    width: 50px;
-    height: 20px;
-    background: url('plane-icon.png') no-repeat center; /* Optional: replace with plane image */
-    animation: flyAcross 2s linear infinite;
-}
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-@keyframes flyAcross {
-    0% { left: -50px; top: 50%; transform: rotate(0deg); }
-    100% { left: 100%; top: 50%; transform: rotate(0deg); }
 }
 
 /* Navigation */
@@ -62,26 +47,21 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to right, #003087, #0040A0);
+    background-color: #003087;
     padding: 15px 20px;
     position: sticky;
     top: 0;
     z-index: 101;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode nav {
-    background: linear-gradient(to right, #0F0F1A, #1A1A2E);
+    background-color: #0F0F1A;
 }
 
 .logo h1 {
     color: white;
     margin: 0;
     font-size: 24px;
-}
-
-.logo h1 i {
-    margin-right: 5px;
 }
 
 .nav-links {
@@ -100,27 +80,11 @@ body.dark-mode nav {
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s, transform 0.3s;
-    position: relative;
 }
 
 .nav-links a:hover {
     color: #FFD700;
     transform: scale(1.05);
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    background: #FFD700;
-    bottom: -5px;
-    left: 0;
-    transition: width 0.3s;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
 }
 
 /* Theme Toggle */
@@ -131,12 +95,11 @@ body.dark-mode nav {
     padding: 5px;
     font-size: 20px;
     color: white;
-    transition: color 0.3s, transform 0.3s;
+    transition: color 0.3s;
 }
 
 .theme-toggle:hover {
     color: #FFD700;
-    transform: rotate(20deg);
 }
 
 body.dark-mode .theme-toggle .fa-sun {
@@ -161,7 +124,6 @@ header {
     background-image: url('hero-fallback.jpg');
     background-size: cover;
     background-position: center;
-    overflow: hidden;
 }
 
 .hero-video {
@@ -179,25 +141,18 @@ header {
     padding: 20px;
     background: rgba(0, 0, 0, 0.4);
     border-radius: 10px;
-    border: 2px solid #FFD700;
 }
 
 .hero h1 {
     font-size: 48px;
     margin: 0;
     animation: fadeInDown 1.5s ease-in-out;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
     font-size: 20px;
     animation: fadeInUp 1.5s ease-in-out 0.5s;
     animation-fill-mode: both;
-}
-
-.hero-plane {
-    top: 20%;
-    animation: flyAcross 5s linear infinite;
 }
 
 @keyframes fadeInDown {
@@ -219,14 +174,12 @@ header {
     border-radius: 25px;
     font-weight: bold;
     margin-top: 20px;
-    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.3s;
 }
 
 .cta-button:hover {
     background: linear-gradient(45deg, #FFC107, #FFD700);
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
 }
 
 .small-cta {
@@ -250,39 +203,12 @@ section {
     padding: 50px;
     max-width: 1200px;
     margin: 0 auto;
-    position: relative;
-}
-
-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('cloud-pattern.png') repeat-x; /* Optional: add cloud image */
-    opacity: 0.1;
-    z-index: -1;
-    animation: driftClouds 60s linear infinite;
-}
-
-@keyframes driftClouds {
-    0% { background-position: 0 0; }
-    100% { background-position: 1000px 0; }
 }
 
 h2 {
     color: #003087;
     font-size: 32px;
     margin-bottom: 20px;
-    text-align: center;
-    position: relative;
-}
-
-h2::after {
-    content: '✈️';
-    font-size: 20px;
-    margin-left: 10px;
 }
 
 body.dark-mode h2 {
@@ -295,21 +221,6 @@ body.dark-mode h2 {
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
     text-align: center;
-}
-
-.feature-item {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    transition: transform 0.3s;
-}
-
-.feature-item:hover {
-    transform: translateY(-5px);
-}
-
-body.dark-mode .feature-item {
-    background: rgba(45, 45, 68, 0.9);
 }
 
 .feature-item img {
@@ -357,7 +268,6 @@ body.dark-mode .stat-item h3 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
 }
 
 body.dark-mode .update-item, body.dark-mode .countdown {
@@ -381,7 +291,6 @@ body.dark-mode .countdown h3 {
     color: white;
     font-family: 'Roboto', monospace;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-    position: relative;
 }
 
 body.dark-mode .countdown-timer {
@@ -396,17 +305,6 @@ body.dark-mode .countdown-timer {
 
 .time-unit {
     text-align: center;
-    position: relative;
-}
-
-.time-unit::before {
-    content: '✈️';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 16px;
-    opacity: 0.5;
 }
 
 .time-unit span {
@@ -441,27 +339,6 @@ body.dark-mode .countdown-timer {
     max-width: 100%;
 }
 
-.radar-bg {
-    animation: radarSweep 4s infinite linear;
-}
-
-.plane-icon {
-    animation: flyAround 2s infinite linear;
-}
-
-@keyframes radarSweep {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes flyAround {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(10px, -10px) rotate(45deg); }
-    50% { transform: translate(0, 0) rotate(0deg); }
-    75% { transform: translate(-10px, 10px) rotate(-45deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
-}
-
 /* Gallery */
 .gallery-grid {
     display: grid;
@@ -473,11 +350,6 @@ body.dark-mode .countdown-timer {
     width: 100%;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-.gallery-grid img:hover {
-    transform: scale(1.05);
 }
 
 /* Testimonials */
@@ -493,16 +365,6 @@ body.dark-mode .countdown-timer {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    position: relative;
-}
-
-.testimonial-item::before {
-    content: '✈️';
-    position: absolute;
-    top: -10px;
-    left: 10px;
-    font-size: 20px;
-    opacity: 0.3;
 }
 
 body.dark-mode .testimonial-item {
@@ -550,14 +412,6 @@ form {
     gap: 15px;
     max-width: 500px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-body.dark-mode form {
-    background: rgba(45, 45, 68, 0.9);
 }
 
 input, textarea {
@@ -573,15 +427,14 @@ button[type="submit"] {
 
 /* Footer */
 footer {
-    background: linear-gradient(to right, #003087, #0040A0);
+    background-color: #003087;
     color: white;
     text-align: center;
     padding: 20px;
-    position: relative;
 }
 
 body.dark-mode footer {
-    background: linear-gradient(to right, #0F0F1A, #1A1A2E);
+    background-color: #0F0F1A;
 }
 
 footer p {
@@ -639,7 +492,7 @@ a:focus, button:focus {
         width: 100%;
         flex-direction: column;
         text-align: center;
-        background: linear-gradient(to bottom, #003087, #0040A0);
+        background-color: #003087;
         position: absolute;
         top: 60px;
         left: 0;
@@ -647,7 +500,7 @@ a:focus, button:focus {
     }
 
     body.dark-mode .nav-links {
-        background: linear-gradient(to bottom, #0F0F1A, #1A1A2E);
+        background-color: #0F0F1A;
     }
 
     .nav-links.active {
