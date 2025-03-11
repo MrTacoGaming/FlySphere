@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlySphere - Your UK Airline </title>
+    <title>FlySphere - Your Roblox Airplay Experience</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -46,9 +46,10 @@
     </nav>
 
     <header id="home">
-        <video autoplay muted loop class="hero-video">
-            <source src="flysphere-trailer.mp4" type="video/mp4">
-        </video>
+        <div class="hero-slideshow">
+            <img src="img/AirportPicture.png" alt="FlySphere Hero 1" class="slide active">
+            <img src="img/AircraftPicture.png" alt="FlySphere Hero 2" class="slide">
+        </div>
         <div class="hero">
             <h1>Welcome Aboard FlySphere</h1>
             <p>Experience the luxury of FlySphere in our high-quality crafted airports.</p>
@@ -69,19 +70,24 @@
         <h2>Our Highlights</h2>
         <div class="feature-grid">
             <div class="feature-item">
+                <img src="img/AircraftPicture.png" alt="Aircraft">
+                <h3>Pilot Experience</h3>
+                <p>Fly realistic aircraft with intuitive controls.</p>
+            </div>
+            <div class="feature-item">
                 <img src="img/AirportPicture.png" alt="Airport">
                 <h3>Airport Exploration</h3>
                 <p>Discover terminals, gates, and more.</p>
             </div>
             <div class="feature-item">
-                <img src="passenger-icon.png" alt="Passenger">
+                <img src="img/passenger-icon.png" alt="Passenger">
                 <h3>Passenger Journeys</h3>
                 <p>Check in and enjoy the flight.</p>
             </div>
             <div class="feature-item">
-                <img src="badge-icon.png" alt="Badge">
-                <h3>Join the Crew</h3>
-                <p>Become a member of the staff!</p>
+                <img src="img/badge-icon.png" alt="Badge">
+                <h3>Earn Rewards</h3>
+                <p>Unlock badges like 'Ace Pilot'!</p>
             </div>
         </div>
     </section>
@@ -171,17 +177,17 @@
     <section id="gallery">
         <h2>Flight Experiences in Pictures</h2>
         <div class="gallery-grid">
-            <img src="screenshot1.jpg" alt="Aircraft in FlySphere">
-            <img src="screenshot2.jpg" alt="Airport in FlySphere">
+            <img src="img/AircraftPicture.png" alt="Aircraft in FlySphere">
+            <img src="img/AirportPicture.png" alt="Airport in FlySphere">
             <img src="screenshot3.jpg" alt="Passenger Area">
         </div>
     </section>
 
     <section id="testimonials">
-        <h2>What Players Say</h2>
+        <h2>What Pilots Say</h2>
         <div class="testimonial-grid">
             <div class="testimonial-item">
-                <p>"The most exceptional flight simulation experience available on Roblox!"</p>
+                <p>"The most exceptional flight simulation experience available on Roblox!                    "</p>
                 <h4>- bre0zd</h4>
             </div>
             <div class="testimonial-item">
@@ -200,9 +206,8 @@
     <section id="community">
         <h2>Our Community</h2>
         <p>Join our crew and stay updated on news and events.</p>
-        <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>   
-    <!--
-        <h2>Leaderboard</h2>
+        <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
+        <!--
         <div class="leaderboard">
             <h3>Top Pilots</h3>
             <div class="leaderboard-grid">
@@ -223,7 +228,7 @@
                 </div>
             </div>
         </div>
-    !-->
+        !-->
     </section>
 
     <section id="contact">
@@ -237,7 +242,7 @@
     </section>
 
     <footer>
-        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> | Your Virtual Airline on Roblox</p>
     </footer>
 
     <script>
@@ -262,6 +267,8 @@
         const heroTitle = document.querySelector('.hero h1');
         const heroText = document.querySelector('.hero p');
         const heroButton = document.querySelector('.hero .cta-button');
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
 
         // Preloader and hero animation
         window.addEventListener('load', () => {
@@ -269,13 +276,20 @@
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.style.display = 'none';
-                    // Start hero animations after preloader fades out
                     heroTitle.style.animation = 'fadeInDown 1.5s ease-in-out forwards';
                     heroText.style.animation = 'fadeInUp 1.5s ease-in-out 0.5s forwards';
                     heroButton.style.animation = 'fadeInUp 1.5s ease-in-out 0.7s forwards';
-                }, 500); // Fade-out duration
-            }, 1000); // Show preloader for 1 second
+                }, 500);
+            }, 1000);
         });
+
+        // Slideshow
+        function showNextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(showNextSlide, 5000); // Change slide every 5 seconds
 
         // Hamburger setup
         hamburger.classList.add('hamburger');
@@ -362,12 +376,12 @@
         // FIDS
         const flightData = [
             { flight: 'FS101', destination: 'Dresden', status: 'On Time', time: '14:30' },
-            { flight: 'FS102', destination: 'Keflavík', status: 'Delayed', time: '15:00' },
-            { flight: 'FS103', destination: 'Keflavík', status: 'Boarding', time: '15:45' },
-            { flight: 'FS104', destination: 'Dresden', status: 'Departed', time: '13:15' },
-            { flight: 'FS105', destination: 'Keflavík', status: 'Arrived', time: '14:00' }
+            { flight: 'FS102', destination: 'Berlin', status: 'Delayed', time: '15:00' },
+            { flight: 'FS103', destination: 'Munich', status: 'Boarding', time: '15:45' },
+            { flight: 'FS104', destination: 'Hamburg', status: 'Departed', time: '13:15' },
+            { flight: 'FS105', destination: 'Frankfurt', status: 'Arrived', time: '14:00' }
         ];
-        
+
         function updateFIDS() {
             fidsBody.innerHTML = '';
             const shuffledFlights = flightData.slice().sort(() => Math.random() - 0.5);
