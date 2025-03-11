@@ -362,11 +362,12 @@
         // FIDS
         const flightData = [
             { flight: 'FS101', destination: 'Dresden', status: 'On Time', time: '14:30' },
+            { flight: 'FS102', destination: 'Keflavík', status: 'Delayed', time: '15:00' },
             { flight: 'FS103', destination: 'Keflavík', status: 'Boarding', time: '15:45' },
             { flight: 'FS104', destination: 'Dresden', status: 'Departed', time: '13:15' },
             { flight: 'FS105', destination: 'Keflavík', status: 'Arrived', time: '14:00' }
         ];
-
+        
         function updateFIDS() {
             fidsBody.innerHTML = '';
             const shuffledFlights = flightData.slice().sort(() => Math.random() - 0.5);
