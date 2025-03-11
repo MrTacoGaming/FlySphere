@@ -11,7 +11,12 @@
 </head>
 <body>
     <div id="preloader">
-        <div class="spinner"></div>
+        <div class="propeller">
+            <div class="blade"></div>
+            <div class="blade"></div>
+            <div class="blade"></div>
+            <div class="blade"></div>
+        </div>
     </div>
 
     <nav>
@@ -224,7 +229,13 @@
 
         // Preloader
         window.addEventListener('load', () => {
-            document.getElementById('preloader').style.display = 'none';
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500); // Fade-out duration
+            }, 1000); // Show for 1 second
         });
 
         // Hamburger setup

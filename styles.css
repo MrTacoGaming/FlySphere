@@ -26,15 +26,41 @@ body.dark-mode {
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    transition: opacity 0.5s ease-out;
 }
 
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #FFD700;
-    border-top: 5px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.propeller {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    animation: spin 0.8s linear infinite;
+}
+
+.blade {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 8px;
+    background: #FFD700;
+    transform-origin: left center;
+    border-radius: 4px;
+}
+
+.blade:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.blade:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.blade:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.blade:nth-child(4) {
+    transform: translate(-50%, -50%) rotate(270deg);
 }
 
 @keyframes spin {
