@@ -227,6 +227,31 @@
             document.documentElement.classList.toggle('light-mode');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
         });
+
+        // Disable right-click on the page
+        document.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            alert('Right-click is disabled on this page.');
+        });
+
+        // Optional: Disable certain key combinations (e.g., Ctrl+U, Ctrl+Shift+I)
+        document.addEventListener('keydown', (event) => {
+            // Disable Ctrl+U (View Source)
+            if (event.ctrlKey && event.key === 'u') {
+                event.preventDefault();
+                alert('Viewing source is disabled.');
+            }
+            // Disable Ctrl+Shift+I (DevTools)
+            if (event.ctrlKey && event.shiftKey && event.key === 'I') {
+                event.preventDefault();
+                alert('Developer tools are disabled.');
+            }
+            // Disable F12 (DevTools)
+            if (event.key === 'F12') {
+                event.preventDefault();
+                alert('Developer tools are disabled.');
+            }
+        });
     </script>
 </body>
 </html>
