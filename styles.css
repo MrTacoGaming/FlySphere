@@ -335,8 +335,7 @@ html.dark-mode .stat-item h3 {
 }
 
 .update-item,
-.countdown,
-.fids {
+.countdown {
     flex: 1 1 300px;
     background-color: #fff;
     padding: 20px;
@@ -345,20 +344,17 @@ html.dark-mode .stat-item h3 {
 }
 
 html.dark-mode .update-item,
-html.dark-mode .countdown,
-html.dark-mode .fids {
+html.dark-mode .countdown {
     background-color: #2D2D44;
 }
 
-.countdown h3,
-.fids h3 {
+.countdown h3 {
     margin: 0 0 10px;
     text-align: center;
     color: #003087;
 }
 
-html.dark-mode .countdown h3,
-html.dark-mode .fids h3 {
+html.dark-mode .countdown h3 {
     color: #FFD700;
 }
 
@@ -415,54 +411,6 @@ html.dark-mode .countdown-timer {
 
 .mobile-countdown svg {
     max-width: 100%;
-}
-
-/* FIDS */
-.fids {
-    flex: 1 1 300px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#fids-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'Roboto', monospace;
-    font-size: 14px;
-}
-
-#fids-table th,
-#fids-table td {
-    padding: 10px;
-    text-align: left;
-}
-
-#fids-table th {
-    background: #003087;
-    color: white;
-    text-transform: uppercase;
-}
-
-html.dark-mode #fids-table th {
-    background: #0F0F1A;
-}
-
-#fids-table tr:nth-child(even) {
-    background: #F5F7FA;
-}
-
-html.dark-mode #fids-table tr:nth-child(even) {
-    background: #1A1A2E;
-}
-
-#fids-table tr:nth-child(odd) {
-    background: #fff;
-}
-
-html.dark-mode #fids-table tr:nth-child(odd) {
-    background: #2D2D44;
 }
 
 .fade-in {
@@ -715,15 +663,6 @@ a:focus, button:focus {
         display: block;
     }
 
-    #fids-table {
-        font-size: 12px;
-    }
-
-    #fids-table th,
-    #fids-table td {
-        padding: 8px;
-    }
-
     .play-community-wrapper {
         padding: 20px;
         gap: 20px;
@@ -732,4 +671,31 @@ a:focus, button:focus {
     section {
         padding: 20px;
     }
+}
+
+/* Styled Table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.styled-table th {
+    background-color: #003087;
+    color: #fff;
+}
+
+.styled-table tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tr:hover {
+    background-color: #f1f1f1;
 }
