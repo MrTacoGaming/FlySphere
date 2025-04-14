@@ -28,10 +28,17 @@
                 alert('Invalid username or password!');
             }
         }
+
+        // Light/Dark mode logic
+        (function() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            const initialTheme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+            document.documentElement.classList.add(initialTheme + '-mode');
+        })();
     </script>
 </head>
 <body>
-
     <nav>
         <div class="logo">
             <h1>FlySphere Staff Portal</h1>
@@ -39,6 +46,9 @@
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>
         </ul>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <i class="fas fa-sun"></i>
+        </button>
     </nav>
 
     <main>
@@ -57,7 +67,7 @@
             <h2>Welcome to the Staff Portal</h2>
             <section id="flight-schedule">
                 <h3>Upcoming Flights</h3>
-                <table>
+                <table class="styled-table">
                     <thead>
                         <tr>
                             <th>Flight</th>
@@ -85,7 +95,7 @@
 
             <section id="events">
                 <h3>Upcoming Events</h3>
-                <table>
+                <table class="styled-table">
                     <thead>
                         <tr>
                             <th>Event</th>
@@ -113,7 +123,7 @@
 
             <section id="team-duties">
                 <h3>Team Duties</h3>
-                <table>
+                <table class="styled-table">
                     <thead>
                         <tr>
                             <th>Staff Member</th>
@@ -138,7 +148,7 @@
 
             <section id="meetings">
                 <h3>Upcoming Meetings</h3>
-                <table>
+                <table class="styled-table">
                     <thead>
                         <tr>
                             <th>Meeting</th>
@@ -167,7 +177,17 @@
     </main>
 
     <footer>
-        <p>© 2025 FlySphere - Staff Portal</p>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
     </footer>
+
+    <script>
+        // Dark mode toggle
+        const toggleButton = document.getElementById('theme-toggle');
+        toggleButton.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+    </script>
 </body>
 </html>
