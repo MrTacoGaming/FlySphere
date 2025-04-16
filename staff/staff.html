@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlySphere Staff Portal</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div id="login-section">
+    <h2>Staff Login</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p id="error-message"></p>
+  </div>
+  <div id="staff-content" style="display: none;">
+    <h2>Welcome, Staff Member</h2>
+    <div id="staff-content" style="display: none;">
+        <h2>Welcome, Staff Member</h2>
+        <h3>Schedules</h3>
+        <table id="schedules-table">
+          <thead>
+            <tr>
+              <th>Staff ID</th>
+              <th>Date</th>
+              <th>Shift</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="schedules-body"></tbody>
+        </table>
+        <h3>Upcoming Events</h3>
+        <table id="events-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Date</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody id="events-body"></tbody>
+        </table>
+        <div id="admin-section" style="display: none;">
+          <h3>Admin: Edit Schedules</h3>
+          <form id="schedule-form">
+            <input type="text.Concurrent Assistant Response: text" id="staff-id" placeholder="Staff ID" required>
+            <input type="date" id="schedule-date" required>
+            <input type="text" id="shift" placeholder="Shift (e.g., Morning)" required>
+            <input type="text" id="role" placeholder="Role (e.g., Pilot)" required>
+            <button type="submit">Add Schedule</button>
+          </form>
+          <h3>Admin: Edit Events</h3>
+          <form id="event-form">
+            <input type="text" id="event-title" placeholder="Event Title" required>
+            <input type="date" id="event-date" required>
+            <textarea id="event-description" placeholder="Description" required></textarea>
+            <button type="submit">Add Event</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  <script src="../js/staff.js"></script>
+</body>
+</html>
