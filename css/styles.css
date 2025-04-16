@@ -165,7 +165,7 @@ html.dark-mode .theme-toggle::after {
     display: none;
     width: 100%;
     flex-direction: column;
-    text-align: center;
+    text-align: right;
     background-color: #003087;
     position: absolute;
     top: 60px;
