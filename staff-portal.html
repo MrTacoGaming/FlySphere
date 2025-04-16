@@ -100,6 +100,19 @@
                     </div>
                 </div>
             </div>
+            <div id="staff-controls" style="display: none;">
+                <h3>Staff Actions</h3>
+                <div class="staff-section">
+                    <h4>Request Leave of Absence</h4>
+                    <div class="form-group">
+                        <input type="text" id="request-leave-staff" placeholder="Your Name" required aria-label="Staff Name">
+                        <input type="date" id="request-leave-start-date" required aria-label="Start Date">
+                        <input type="date" id="request-leave-end-date" required aria-label="End Date">
+                        <input type="text" id="request-leave-reason" placeholder="Reason" required aria-label="Reason">
+                        <button class="small-cta" onclick="requestLeave()">Request Leave</button>
+                    </div>
+                </div>
+            </div>
             <h3>Schedules</h3>
             <table class="styled-table">
                 <thead>
@@ -258,15 +271,17 @@
                         const loginSection = document.getElementById('login-section');
                         const staffContent = document.getElementById('staff-content');
                         const adminControls = document.getElementById('admin-controls');
+                        const staffControls = document.getElementById('staff-controls');
                         const adminOnlyElements = document.querySelectorAll('.admin-only');
                         const syncStatus = document.getElementById('sync-status');
 
                         console.log('Checking DOM elements...');
-                        if (!loginSection || !staffContent || !adminControls || !syncStatus) {
+                        if (!loginSection || !staffContent || !adminControls || !staffControls || !syncStatus) {
                             console.error('DOM elements missing:', {
                                 loginSection: !!loginSection,
                                 staffContent: !!staffContent,
                                 adminControls: !!adminControls,
+                                staffControls: !!staffControls,
                                 syncStatus: !!syncStatus
                             });
                             return;
@@ -292,21 +307,24 @@
                             if (isAdmin) {
                                 console.log('Showing admin controls');
                                 adminControls.style.display = 'block';
+                                staffControls.style.display = 'none';
                                 adminOnlyElements.forEach(el => el.style.display = 'table-cell');
                             } else {
-                                console.log('Hiding admin controls');
+                                console.log('Showing staff controls');
                                 adminControls.style.display = 'none';
+                                staffControls.style.display = 'block';
                                 adminOnlyElements.forEach(el => el.style.display = 'none');
                             }
 
                             console.log('Loading tables...');
-                            loadTables(user.email);
+                            loadTables(user.email, isAdmin);
                             // Sync status updated in loadTables
                         } else {
                             console.log('No user, showing login section');
                             loginSection.style.display = 'block';
                             staffContent.style.display = 'none';
                             adminControls.style.display = 'none';
+                            staffControls.style.display = 'none';
                             adminOnlyElements.forEach(el => el.style.display = 'none');
                             syncStatus.textContent = '';
                         }
@@ -485,7 +503,7 @@
             }
 
             // Load tables with real-time listeners
-            async function loadTables(userEmail) {
+            async function loadTables(userEmail, isAdmin) {
                 console.log('Loading tables');
                 try {
                     const scheduleTable = document.getElementById('schedule-table');
@@ -502,10 +520,6 @@
                         });
                         return;
                     }
-
-                    const user = auth.currentUser;
-                    const userDoc = user ? await getDoc(doc(db, 'users', user.uid)) : null;
-                    const isAdmin = userDoc && userDoc.exists() && userDoc.data().role === 'admin';
 
                     let syncStates = {
                         schedules: false,
@@ -606,23 +620,25 @@
                             leaveTable.innerHTML = '';
                             snapshot.forEach(doc => {
                                 const leave = doc.data();
-                                const row = document.createElement('tr');
-                                row.classList.add('fade-in');
-                                row.innerHTML = `
-                                    <td>${leave.staff || ''}</td>
-                                    <td>${leave.startDate || ''}</td>
-                                    <td>${leave.endDate || ''}</td>
-                                    <td>${leave.reason || ''}</td>
-                                    <td>${leave.createdBy || ''}</td>
-                                    <td>${formatTimestamp(leave.createdAt)}</td>
-                                    <td>${leave.modifiedBy || ''}</td>
-                                    <td>${formatTimestamp(leave.modifiedAt)}</td>
-                                    <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                                        <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
-                                        <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
-                                    </td>
-                                `;
-                                leaveTable.appendChild(row);
+                                if (isAdmin || leave.createdBy === userEmail) {
+                                    const row = document.createElement('tr');
+                                    row.classList.add('fade-in');
+                                    row.innerHTML = `
+                                        <td>${leave.staff || ''}</td>
+                                        <td>${leave.startDate || ''}</td>
+                                        <td>${leave.endDate || ''}</td>
+                                        <td>${leave.reason || ''}</td>
+                                        <td>${leave.createdBy || ''}</td>
+                                        <td>${formatTimestamp(leave.createdAt)}</td>
+                                        <td>${leave.modifiedBy || ''}</td>
+                                        <td>${formatTimestamp(leave.modifiedAt)}</td>
+                                        <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                            <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
+                                            <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
+                                        </td>
+                                    `;
+                                    leaveTable.appendChild(row);
+                                }
                             });
                             syncStates.leaves = true;
                             updateSyncStatus();
@@ -731,7 +747,7 @@
                 }
             };
 
-            // Add leave
+            // Add leave (Admin Only)
             window.addLeave = function() {
                 console.log('Add leave clicked');
                 try {
@@ -773,6 +789,51 @@
                 } catch (error) {
                     console.error('Error in addLeave:', error);
                     alert('Failed to add leave. Please try again.');
+                }
+            };
+
+            // Request leave (Staff)
+            window.requestLeave = function() {
+                console.log('Request leave clicked');
+                try {
+                    const staffInput = document.getElementById('request-leave-staff');
+                    const startDateInput = document.getElementById('request-leave-start-date');
+                    const endDateInput = document.getElementById('request-leave-end-date');
+                    const reasonInput = document.getElementById('request-leave-reason');
+
+                    if (!staffInput || !startDateInput || !endDateInput || !reasonInput) {
+                        console.error('Request leave form elements not found');
+                        return;
+                    }
+
+                    const staff = staffInput.value.trim();
+                    const startDate = startDateInput.value;
+                    const endDate = endDateInput.value;
+                    const reason = reasonInput.value.trim();
+
+                    if (staff && startDate && endDate && reason) {
+                        addDoc(collection(db, 'leaves'), {
+                            staff,
+                            startDate,
+                            endDate,
+                            reason,
+                            createdBy: auth.currentUser.email,
+                            createdAt: serverTimestamp(),
+                            modifiedBy: auth.currentUser.email,
+                            modifiedAt: serverTimestamp()
+                        }).then(() => {
+                            console.log('Leave requested:', { staff, startDate, endDate, reason });
+                            clearForm('request-leave');
+                        }).catch(error => {
+                            console.error('Error requesting leave:', error);
+                            alert('Failed to request leave. Please try again.');
+                        });
+                    } else {
+                        alert('Please fill all fields.');
+                    }
+                } catch (error) {
+                    console.error('Error in requestLeave:', error);
+                    alert('Failed to request leave. Please try again.');
                 }
             };
 
@@ -939,7 +1000,7 @@
             window.clearForm = function(type) {
                 console.log('Clearing form:', type);
                 try {
-                    const prefix = type === 'schedule' ? 'schedule-' : type === 'event' ? 'event-' : 'leave-;
+                    const prefix = type === 'schedule' ? 'schedule-' : type === 'event' ? 'event-' : type === 'leave-' ? 'leave-' : 'request-leave-';
                     const staffInput = document.getElementById(`${prefix}staff`);
                     const titleInput = document.getElementById(`${prefix}title`);
                     const dateInput = document.getElementById(`${prefix}date`);
@@ -988,6 +1049,10 @@
             window.addLeave = function() {
                 console.log('Add leave clicked');
                 alert('Adding leave records is currently unavailable. Please try again later.');
+            };
+            window.requestLeave = function() {
+                console.log('Request leave clicked');
+                alert('Requesting leave is currently unavailable. Please try again later.');
             };
             window.editSchedule = function() {
                 console.log('Edit schedule clicked');
