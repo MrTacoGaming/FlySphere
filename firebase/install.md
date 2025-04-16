@@ -32,6 +32,25 @@
      ```
    - Paste it into `staff-portal.html` (replace placeholder).
 
+npm install firebase
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCXbjnQqzxIy1bbQ-lrleUUT1EnRzvNPPY",
+  authDomain: "flysphere-75c1c.firebaseapp.com",
+  projectId: "flysphere-75c1c",
+  storageBucket: "flysphere-75c1c.firebasestorage.app",
+  messagingSenderId: "582235400495",
+  appId: "1:582235400495:web:5e28918ffeae4cf41e59da"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
 5. **Secure Firestore**:
    - In `Firestore Database` > `Rules`, replace test mode rules with:
      ```firestore
