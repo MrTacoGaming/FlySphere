@@ -12,6 +12,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="manifest" href="favicon/site.webmanifest">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
     <script>
         (function() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -50,18 +53,17 @@
             <div class="login-container">
                 <h3>Staff Login</h3>
                 <div class="login-form">
-                    <input type="text" id="username" placeholder="Username" required aria-label="Username">
+                    <input type="email" id="email" placeholder="Email" required aria-label="Email">
                     <input type="password" id="password" placeholder="Password" required aria-label="Password">
                     <button class="cta-button" onclick="login()">Login</button>
+                    <button class="cta-button" onclick="signUp()">Sign Up</button>
                 </div>
-                <p id="login-error" style="color: #DC3545; display: none;" aria-live="polite">Invalid credentials. Please try again.</p>
+                <p id="login-error" style="color: #DC3545; display: none;" aria-live="polite"></p>
             </div>
         </div>
         <div id="staff-content" style="display: none;">
             <div class="data-controls">
-                <button class="small-cta" onclick="exportData()">Export Data</button>
-                <input type="file" id="import-file" accept=".json" style="display: none;" aria-label="Import data file">
-                <button class="small-cta" onclick="document.getElementById('import-file').click()">Import Data</button>
+                <span id="sync-status" style="margin-right: 10px;"></span>
                 <button class="small-cta" onclick="logout()">Logout</button>
             </div>
             <div id="admin-controls" style="display: none;">
@@ -121,6 +123,21 @@
     </footer>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXbjnQqzxIy1bbQ-lrleUUT1EnRzvNPPY",
+            authDomain: "flysphere-75c1c.firebaseapp.com",
+            projectId: "flysphere-75c1c",
+            storageBucket: "flysphere-75c1c.appspot.com",
+            messagingSenderId: "582235400495",
+            appId: "1:582235400495:web:5e28919ffeae4cf41e59da"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
         // Disable right-click and source view
         document.addEventListener('contextmenu', e => {
             console.log('Right-click prevented');
@@ -164,7 +181,6 @@
                 }
             });
 
-            // Close menu on link click
             navLinks.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     console.log('Nav link clicked:', link.textContent);
@@ -179,29 +195,15 @@
             console.error('Hamburger or nav-links not found');
         }
 
-        // Mock user database (not secure)
-        const users = [
-            { username: 'admin', password: 'admin123', role: 'admin' },
-            { username: 'staff1', password: 'staff123', role: 'staff' }
-        ];
-
-        // Check session and data on load
-        window.addEventListener('load', () => {
-            console.log('Page loaded, checking session and data');
-            checkSession();
-            console.log('Schedules:', localStorage.getItem('schedules'));
-            console.log('Events:', localStorage.getItem('events'));
-        });
-
-        // Session management
-        function checkSession() {
-            console.log('Checking session');
+        // Check auth state
+        auth.onAuthStateChanged(user => {
+            console.log('Auth state changed:', user ? user.email : 'No user');
             try {
-                const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
                 const loginSection = document.getElementById('login-section');
                 const staffContent = document.getElementById('staff-content');
                 const adminControls = document.getElementById('admin-controls');
                 const adminOnlyElements = document.querySelectorAll('.admin-only');
+                const syncStatus = document.getElementById('sync-status');
 
                 if (!loginSection || !staffContent) {
                     console.error('Login section or staff content not found');
@@ -209,84 +211,115 @@
                 }
 
                 if (user) {
-                    console.log('User found:', user.username);
                     loginSection.style.display = 'none';
                     staffContent.style.display = 'block';
-                    if (user.role === 'admin' && adminControls) {
-                        console.log('Admin user, showing controls');
-                        adminControls.style.display = 'block';
-                        adminOnlyElements.forEach(el => {
-                            el.style.display = 'table-cell';
-                        });
-                    }
-                    loadTables();
+                    syncStatus.textContent = 'Syncing...';
+                    db.collection('users').doc(user.uid).get().then(doc => {
+                        if (doc.exists && doc.data().role === 'admin') {
+                            console.log('Admin user, showing controls');
+                            adminControls.style.display = 'block';
+                            adminOnlyElements.forEach(el => el.style.display = 'table-cell');
+                        }
+                        loadTables();
+                        syncStatus.textContent = 'Synced';
+                    });
                 } else {
-                    console.log('No user, showing login');
                     loginSection.style.display = 'block';
                     staffContent.style.display = 'none';
-                    if (adminControls) {
-                        adminControls.style.display = 'none';
-                    }
-                    adminOnlyElements.forEach(el => {
-                        el.style.display = 'none';
-                    });
+                    adminControls.style.display = 'none';
+                    adminOnlyElements.forEach(el => el.style.display = 'none');
+                    syncStatus.textContent = '';
                 }
             } catch (error) {
-                console.error('Error in checkSession:', error);
+                console.error('Error in auth state:', error);
             }
-        }
+        });
 
         // Login
         function login() {
             console.log('Login button clicked');
             try {
-                const usernameInput = document.getElementById('username');
+                const emailInput = document.getElementById('email');
                 const passwordInput = document.getElementById('password');
                 const errorElement = document.getElementById('login-error');
 
-                if (!usernameInput || !passwordInput || !errorElement) {
+                if (!emailInput || !passwordInput || !errorElement) {
                     console.error('Login form elements not found');
                     return;
                 }
 
-                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
                 const password = passwordInput.value;
 
-                console.log('Username entered:', username);
-                console.log('Password entered:', password ? '[hidden]' : 'empty');
-
-                if (!username || !password) {
-                    console.log('Empty fields detected');
-                    errorElement.textContent = 'Please enter both username and password.';
+                if (!email || !password) {
+                    errorElement.textContent = 'Please enter both email and password.';
                     errorElement.style.display = 'block';
-                    usernameInput.value = '';
-                    passwordInput.value = '';
                     return;
                 }
 
-                const user = users.find(u => u.username === username && u.password === password);
-
-                if (user) {
-                    console.log('Valid credentials, logging in:', username);
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    errorElement.style.display = 'none';
-                    usernameInput.value = '';
-                    passwordInput.value = '';
-                    checkSession();
-                } else {
-                    console.log('Invalid credentials');
-                    errorElement.textContent = 'Invalid credentials. Please try again.';
-                    errorElement.style.display = 'block';
-                    usernameInput.value = '';
-                    passwordInput.value = '';
-                }
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => {
+                        console.log('Logged in:', email);
+                        errorElement.style.display = 'none';
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                    })
+                    .catch(error => {
+                        console.log('Login error:', error.message);
+                        errorElement.textContent = error.message;
+                        errorElement.style.display = 'block';
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                    });
             } catch (error) {
                 console.error('Error in login:', error);
+            }
+        }
+
+        // Sign Up
+        function signUp() {
+            console.log('Sign Up button clicked');
+            try {
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
                 const errorElement = document.getElementById('login-error');
-                if (errorElement) {
-                    errorElement.textContent = 'An error occurred. Please try again.';
-                    errorElement.style.display = 'block';
+
+                if (!emailInput || !passwordInput || !errorElement) {
+                    console.error('Sign-up form elements not found');
+                    return;
                 }
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                if (!email || !password) {
+                    errorElement.textContent = 'Please enter both email and password.';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then(userCredential => {
+                        console.log('Signed up:', email);
+                        return db.collection('users').doc(userCredential.user.uid).set({
+                            email: email,
+                            role: 'staff' // Default role; admin must be set manually
+                        });
+                    })
+                    .then(() => {
+                        errorElement.style.display = 'none';
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                    })
+                    .catch(error => {
+                        console.log('Sign-up error:', error.message);
+                        errorElement.textContent = error.message;
+                        errorElement.style.display = 'block';
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                    });
+            } catch (error) {
+                console.error('Error in signUp:', error);
             }
         }
 
@@ -294,76 +327,17 @@
         function logout() {
             console.log('Logout clicked');
             try {
-                localStorage.removeItem('currentUser');
-                const usernameInput = document.getElementById('username');
-                const passwordInput = document.getElementById('password');
-                if (usernameInput) usernameInput.value = '';
-                if (passwordInput) passwordInput.value = '';
-                checkSession();
-                console.log('Schedules after logout:', localStorage.getItem('schedules'));
-                console.log('Events after logout:', localStorage.getItem('events'));
+                auth.signOut().then(() => {
+                    console.log('Logged out');
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+                });
             } catch (error) {
                 console.error('Error in logout:', error);
             }
         }
 
-        // Export data
-        function exportData() {
-            console.log('Export data clicked');
-            try {
-                const data = {
-                    schedules: JSON.parse(localStorage.getItem('schedules') || '[]'),
-                    events: JSON.parse(localStorage.getItem('events') || '[]')
-                };
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'flysphere-data.json';
-                a.click();
-                URL.revokeObjectURL(url);
-                console.log('Data exported:', data);
-            } catch (error) {
-                console.error('Error in exportData:', error);
-                alert('Failed to export data.');
-            }
-        }
-
-        // Import data
-        document.getElementById('import-file').addEventListener('change', function(e) {
-            console.log('Import file selected');
-            try {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        if (data.schedules) {
-                            localStorage.setItem('schedules', JSON.stringify(data.schedules));
-                            console.log('Schedules imported:', data.schedules);
-                        }
-                        if (data.events) {
-                            localStorage.setItem('events', JSON.stringify(data.events));
-                            console.log('Events imported:', data.events);
-                        }
-                        loadTables();
-                        alert('Data imported successfully.');
-                        e.target.value = '';
-                    } catch (error) {
-                        console.error('Error parsing imported data:', error);
-                        alert('Invalid data format.');
-                    }
-                };
-                reader.readAsText(file);
-            } catch (error) {
-                console.error('Error in importData:', error);
-                alert('Failed to import data.');
-            }
-        });
-
-        // Load tables
+        // Load tables with real-time listeners
         function loadTables() {
             console.log('Loading tables');
             try {
@@ -375,46 +349,48 @@
                     return;
                 }
 
-                // Load schedules
-                const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
-                scheduleTable.innerHTML = '';
-                schedules.forEach((schedule, index) => {
-                    const row = document.createElement('tr');
-                    row.classList.add('fade-in');
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                    const isAdmin = currentUser.role === 'admin';
-                    row.innerHTML = `
-                        <td>${schedule.staff || ''}</td>
-                        <td>${schedule.date || ''}</td>
-                        <td>${schedule.time || ''}</td>
-                        <td>${schedule.task || ''}</td>
-                        <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                            <button class="small-cta" onclick="editSchedule(${index})">Edit</button>
-                            <button class="small-cta" onclick="deleteSchedule(${index})">Delete</button>
-                        </td>
-                    `;
-                    scheduleTable.appendChild(row);
+                // Real-time schedules
+                db.collection('schedules').orderBy('date').onSnapshot(snapshot => {
+                    scheduleTable.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const schedule = doc.data();
+                        const row = document.createElement('tr');
+                        row.classList.add('fade-in');
+                        const isAdmin = auth.currentUser && db.collection('users').doc(auth.currentUser.uid).get().then(d => d.data().role === 'admin');
+                        row.innerHTML = `
+                            <td>${schedule.staff || ''}</td>
+                            <td>${schedule.date || ''}</td>
+                            <td>${schedule.time || ''}</td>
+                            <td>${schedule.task || ''}</td>
+                            <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                <button class="small-cta" onclick="editSchedule('${doc.id}')">Edit</button>
+                                <button class="small-cta" onclick="deleteSchedule('${doc.id}')">Delete</button>
+                            </td>
+                        `;
+                        scheduleTable.appendChild(row);
+                    });
                 });
 
-                // Load events
-                const events = JSON.parse(localStorage.getItem('events') || '[]');
-                eventTable.innerHTML = '';
-                events.forEach((event, index) => {
-                    const row = document.createElement('tr');
-                    row.classList.add('fade-in');
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                    const isAdmin = currentUser.role === 'admin';
-                    row.innerHTML = `
-                        <td>${event.title || ''}</td>
-                        <td>${event.date || ''}</td>
-                        <td>${event.time || ''}</td>
-                        <td>${event.location || ''}</td>
-                        <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                            <button class="small-cta" onclick="editEvent(${index})">Edit</button>
-                            <button class="small-cta" onclick="deleteEvent(${index})">Delete</button>
-                        </td>
-                    `;
-                    eventTable.appendChild(row);
+                // Real-time events
+                db.collection('events').orderBy('date').onSnapshot(snapshot => {
+                    eventTable.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const event = doc.data();
+                        const row = document.createElement('tr');
+                        row.classList.add('fade-in');
+                        const isAdmin = auth.currentUser && db.collection('users').doc(auth.currentUser.uid).get().then(d => d.data().role === 'admin');
+                        row.innerHTML = `
+                            <td>${event.title || ''}</td>
+                            <td>${event.date || ''}</td>
+                            <td>${event.time || ''}</td>
+                            <td>${event.location || ''}</td>
+                            <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                <button class="small-cta" onclick="editEvent('${doc.id}')">Edit</button>
+                                <button class="small-cta" onclick="deleteEvent('${doc.id}')">Delete</button>
+                            </td>
+                        `;
+                        eventTable.appendChild(row);
+                    });
                 });
             } catch (error) {
                 console.error('Error in loadTables:', error);
@@ -441,14 +417,17 @@
                 const task = taskInput.value.trim();
 
                 if (staff && date && time && task) {
-                    const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
-                    schedules.push({ staff, date, time, task });
-                    localStorage.setItem('schedules', JSON.stringify(schedules));
-                    console.log('Schedule added:', { staff, date, time, task });
-                    loadTables();
-                    clearForm('schedule');
+                    db.collection('schedules').add({
+                        staff,
+                        date,
+                        time,
+                        task,
+                        createdBy: auth.currentUser.uid
+                    }).then(() => {
+                        console.log('Schedule added:', { staff, date, time, task });
+                        clearForm('schedule');
+                    });
                 } else {
-                    console.log('Incomplete schedule form');
                     alert('Please fill all fields.');
                 }
             } catch (error) {
@@ -476,14 +455,17 @@
                 const location = locationInput.value.trim();
 
                 if (title && date && time && location) {
-                    const events = JSON.parse(localStorage.getItem('events') || '[]');
-                    events.push({ title, date, time, location });
-                    localStorage.setItem('events', JSON.stringify(events));
-                    console.log('Event added:', { title, date, time, location });
-                    loadTables();
-                    clearForm('event');
+                    db.collection('events').add({
+                        title,
+                        date,
+                        time,
+                        location,
+                        createdBy: auth.currentUser.uid
+                    }).then(() => {
+                        console.log('Event added:', { title, date, time, location });
+                        clearForm('event');
+                    });
                 } else {
-                    console.log('Incomplete event form');
                     alert('Please fill all fields.');
                 }
             } catch (error) {
@@ -492,45 +474,40 @@
         }
 
         // Edit schedule
-        function editSchedule(index) {
-            console.log('Edit schedule:', index);
+        function editSchedule(id) {
+            console.log('Edit schedule:', id);
             try {
-                const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
-                const schedule = schedules[index];
-                if (schedule) {
-                    const staffInput = document.getElementById('schedule-staff');
-                    const dateInput = document.getElementById('schedule-date');
-                    const timeInput = document.getElementById('schedule-time');
-                    const taskInput = document.getElementById('schedule-task');
+                db.collection('schedules').doc(id).get().then(doc => {
+                    if (doc.exists) {
+                        const schedule = doc.data();
+                        const staffInput = document.getElementById('schedule-staff');
+                        const dateInput = document.getElementById('schedule-date');
+                        const timeInput = document.getElementById('schedule-time');
+                        const taskInput = document.getElementById('schedule-task');
 
-                    if (staffInput && dateInput && timeInput && taskInput) {
-                        staffInput.value = schedule.staff || '';
-                        dateInput.value = schedule.date || '';
-                        timeInput.value = schedule.time || '';
-                        taskInput.value = schedule.task || '';
-                        schedules.splice(index, 1);
-                        localStorage.setItem('schedules', JSON.stringify(schedules));
-                        console.log('Schedule edited, index:', index);
-                        loadTables();
-                    } else {
-                        console.error('Schedule form elements not found');
+                        if (staffInput && dateInput && timeInput && taskInput) {
+                            staffInput.value = schedule.staff || '';
+                            dateInput.value = schedule.date || '';
+                            timeInput.value = schedule.time || '';
+                            taskInput.value = schedule.task || '';
+                            db.collection('schedules').doc(id).delete();
+                            console.log('Schedule prepared for edit:', id);
+                        }
                     }
-                }
+                });
             } catch (error) {
                 console.error('Error in editSchedule:', error);
             }
         }
 
         // Delete schedule
-        function deleteSchedule(index) {
-            console.log('Delete schedule:', index);
+        function deleteSchedule(id) {
+            console.log('Delete schedule:', id);
             try {
                 if (confirm('Are you sure you want to delete this schedule?')) {
-                    const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
-                    schedules.splice(index, 1);
-                    localStorage.setItem('schedules', JSON.stringify(schedules));
-                    console.log('Schedule deleted, index:', index);
-                    loadTables();
+                    db.collection('schedules').doc(id).delete().then(() => {
+                        console.log('Schedule deleted:', id);
+                    });
                 }
             } catch (error) {
                 console.error('Error in deleteSchedule:', error);
@@ -538,45 +515,40 @@
         }
 
         // Edit event
-        function editEvent(index) {
-            console.log('Edit event:', index);
+        function editEvent(id) {
+            console.log('Edit event:', id);
             try {
-                const events = JSON.parse(localStorage.getItem('events') || '[]');
-                const event = events[index];
-                if (event) {
-                    const titleInput = document.getElementById('event-title');
-                    const dateInput = document.getElementById('event-date');
-                    const timeInput = document.getElementById('event-time');
-                    const locationInput = document.getElementById('event-location');
+                db.collection('events').doc(id).get().then(doc => {
+                    if (doc.exists) {
+                        const event = doc.data();
+                        const titleInput = document.getElementById('event-title');
+                        const dateInput = document.getElementById('event-date');
+                        const timeInput = document.getElementById('event-time');
+                        const locationInput = document.getElementById('event-location');
 
-                    if (titleInput && dateInput && timeInput && locationInput) {
-                        titleInput.value = event.title || '';
-                        dateInput.value = event.date || '';
-                        timeInput.value = event.time || '';
-                        locationInput.value = event.location || '';
-                        events.splice(index, 1);
-                        localStorage.setItem('events', JSON.stringify(events));
-                        console.log('Event edited, index:', index);
-                        loadTables();
-                    } else {
-                        console.error('Event form elements not found');
+                        if (titleInput && dateInput && timeInput && locationInput) {
+                            titleInput.value = event.title || '';
+                            dateInput.value = event.date || '';
+                            timeInput.value = event.time || '';
+                            locationInput.value = event.location || '';
+                            db.collection('events').doc(id).delete();
+                            console.log('Event prepared for edit:', id);
+                        }
                     }
-                }
+                });
             } catch (error) {
                 console.error('Error in editEvent:', error);
             }
         }
 
         // Delete event
-        function deleteEvent(index) {
-            console.log('Delete event:', index);
+        function deleteEvent(id) {
+            console.log('Delete event:', id);
             try {
                 if (confirm('Are you sure you want to delete this event?')) {
-                    const events = JSON.parse(localStorage.getItem('events') || '[]');
-                    events.splice(index, 1);
-                    localStorage.setItem('events', JSON.stringify(events));
-                    console.log('Event deleted, index:', index);
-                    loadTables();
+                    db.collection('events').doc(id).delete().then(() => {
+                        console.log('Event deleted:', id);
+                    });
                 }
             } catch (error) {
                 console.error('Error in deleteEvent:', error);

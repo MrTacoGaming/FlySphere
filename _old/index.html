@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlySphere</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="favicon/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <script>
+        (function() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            document.documentElement.classList.add(savedTheme || (prefersDark ? 'dark' : 'light') + '-mode');
+        })();
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <h1>FlySphere</h1>
+        </div>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <i class="fas fa-sun"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#updates">Updates</a></li>
+            <li><a href="#play">Play</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="staff-portal.html">Staff Portal</a></li>
+        </ul>
+    </nav>
+
+    <header id="home">
+        <div class="hero-slideshow">
+            <img src="img/airport.png" alt="Airport" class="slide active">
+            <img src="img/aircraft.png" alt="Aircraft" class="slide">
+            <img src="img/aircraft_flying.png" alt="Flight" class="slide">
+            <img src="img/lounge.png" alt="Loung" class="slide">
+        </div>
+        <div class="hero">
+            <h1>Welcome Aboard FlySphere</h1>
+            <p>Experience the luxury of FlySphere in our high-quality crafted airports.</p>
+            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Take Off Now</a>
+        </div>
+    </header>
+
+    <section id="about">
+        <h2>About FlySphere</h2>
+        <p>
+            FlySphere brings the world of aviation to Roblox. Check out our lounge, explore detailed airports, 
+            and enjoy flight experiences as a passenger – or maybe treat yourself to a first-class flight?
+        </p>
+    </section>
+
+    <section id="features">
+        <h2>Features</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="img/airport.png" alt="Airport Terminal" class="gallery-image">
+                <p>Explore realistic airport terminals</p>
+            </div>
+            <div class="gallery-item">
+                <img src="img/aircraft.png" alt="Ground Operations" class="gallery-image">
+                <p>Experience realistic ground operations</p>
+            </div>
+            <div class="gallery-item">
+                <img src="img/lounge.png" alt="Lounges" class="gallery-image">
+                <p>Relax in the passenger lounge</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats">
+        <h2>FlySphere in Numbers</h2>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>+++</h3>
+                <p>Flights Launched</p>
+            </div>
+            <div class="stat-item">
+                <h3>2</h3>
+                <p>Airports to Explore</p>
+            </div>
+            <div class="stat-item">
+                <h3>+++</h3>
+                <p>Passengers Transported</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="updates">
+        <h2>Latest Updates</h2>
+        <div class="update-list">
+            <div class="update-item">
+                <h3>New: Bus operations</h3>
+                <p><strong>Mar 11, 2025</strong> - Now available to transfer passengers from the terminal to the aircraft!</p>
+            </div>
+            <div class="update-item">
+                <h3>Event: Inaugural Flight</h3>
+                <p><strong>Apr 5, 2025, 4:00 PM CET</strong> - Join us for the first public flight!</p>
+            </div>
+            <div class="countdown">
+                <h3>Inaugural Flight Countdown</h3>
+                <div class="countdown-timer" id="countdown-timer">
+                    <div class="desktop-countdown">
+                        <div class="time-unit">
+                            <span id="days">00</span>
+                            <p>Days</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="hours">00</span>
+                            <p>Hours</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="minutes">00</span>
+                            <p>Minutes</p>
+                        </div>
+                        <div class="time-unit">
+                            <span id="seconds">00</span>
+                            <p>Seconds</p>
+                        </div>
+                    </div>
+                    <div class="mobile-countdown">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="days-circle"/>
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="439.82" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="hours-circle"/>
+                            <circle cx="100" cy="100" r="50" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="minutes-circle"/>
+                            <circle cx="100" cy="100" r="30" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="188.49" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="seconds-circle"/>
+                            <rect x="70" y="40" width="60" height="120" fill="#003087" rx="10" opacity="0.8"/>
+                            <text id="mobile-days" x="100" y="70" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00d</text>
+                            <text id="mobile-hours" x="100" y="95" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00h</text>
+                            <text id="mobile-minutes" x="100" y="120" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00m</text>
+                            <text id="mobile-seconds" x="100" y="145" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00s</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="play-community-wrapper">
+        <section id="play">
+            <h2>Play Now</h2>
+            <p>Join FlySphere on Roblox and start your aviation adventure today!</p>
+            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Play Now</a>
+        </section>
+
+        <section id="community">
+            <h2>Join Our Community</h2>
+            <p>Connect with fellow aviation enthusiasts in our Discord server!</p>
+            <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
+        </section>
+    </div>
+
+    <section id="testimonials">
+        <h2>What Our Players Say</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-item">
+                <p>"FlySphere is the best Roblox airline experience!"</p>
+                <p>- bre0zd</p>
+            </div>
+            <div class="testimonial-item">
+                <p>"The attention to detail is incredible."</p>
+                <p>- Anonymous</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-image">
+    </div>
+
+    <footer>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> / <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">MrTacoGaming76</a> - Your Virtual Airline on Roblox</p>
+    </footer>
+
+    <script>
+        // Disable right-click and source view
+        document.addEventListener('contextmenu', e => {
+            console.log('Right-click prevented');
+            e.preventDefault();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'i' || e.key === 'I') || e.key === 'F12') {
+                console.log('Source view prevented');
+                e.preventDefault();
+            }
+        });
+
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            console.log('Theme toggle clicked');
+            try {
+                document.documentElement.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('light-mode');
+                const theme = document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+                console.log('Theme set to:', theme);
+            } catch (error) {
+                console.error('Error in theme toggle:', error);
+            }
+        });
+
+        // Hamburger menu
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                console.log('Hamburger clicked');
+                try {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.toggle('active');
+                        hamburger.classList.toggle('active');
+                        console.log('Nav links toggled:', navLinks.classList.contains('active'));
+                    }
+                } catch (error) {
+                    console.error('Error in hamburger toggle:', error);
+                }
+            });
+
+            // Close menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    console.log('Nav link clicked:', link.textContent);
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        hamburger.classList.remove('active');
+                        console.log('Menu closed after link click');
+                    }
+                });
+            });
+        } else {
+            console.error('Hamburger or nav-links not found');
+        }
+
+        // Smooth scroll for home link
+        document.querySelectorAll('a[href="#home"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Home link clicked');
+                const navHeight = document.querySelector('nav').offsetHeight;
+                const target = document.getElementById('home');
+                if (target) {
+                    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    console.log('Scrolled to home with offset:', offsetTop);
+                }
+            });
+        });
+
+        // Slideshow
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        setInterval(nextSlide, 5000);
+        showSlide(currentSlide);
+
+        // Hero animations
+        const heroElements = document.querySelectorAll('.hero h1, .hero p, .hero .cta-button');
+        heroElements.forEach((el, index) => {
+            setTimeout(() => {
+                el.style.animation = `fadeIn${index % 2 === 0 ? 'Down' : 'Up'} 1s ease forwards`;
+            }, index * 200);
+        });
+
+        // Lightbox
+        const galleryImages = document.querySelectorAll('.gallery-image');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxClose = document.querySelector('.lightbox-close');
+
+        galleryImages.forEach(image => {
+            image.addEventListener('click', () => {
+                lightboxImage.src = image.src;
+                lightbox.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+
+        lightbox.addEventListener('click', e => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Countdown
+        function startCountdown() {
+            const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime();
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                document.getElementById('mobile-timer').textContent = `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.querySelector('.countdown-timer').textContent = 'Flight Has Launched!';
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+    </script>
+</body>
+</html>

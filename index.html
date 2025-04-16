@@ -46,58 +46,36 @@
 
     <header id="home">
         <div class="hero-slideshow">
-            <img src="img/airport.png" alt="Airport" class="slide active">
-            <img src="img/aircraft.png" alt="Aircraft" class="slide">
-            <img src="img/aircraft_flying.png" alt="Flight" class="slide">
-            <img src="img/lounge.png" alt="Loung" class="slide">
+            <img src="img/airport.webp" alt="Airport" class="slide active">
+            <img src="img/plane-interior.webp" alt="Plane Interior" class="slide">
+            <img src="img/sunset-flight.webp" alt="Sunset Flight" class="slide">
         </div>
         <div class="hero">
-            <h1>Welcome Aboard FlySphere</h1>
-            <p>Experience the luxury of FlySphere in our high-quality crafted airports.</p>
-            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Take Off Now</a>
+            <h1>FlySphere</h1>
+            <p>Your Ultimate Virtual Airline Experience on Roblox!</p>
+            <a href="#play" class="cta-button">Join Now</a>
         </div>
     </header>
 
     <section id="about">
         <h2>About FlySphere</h2>
-        <p>
-            FlySphere brings the world of aviation to Roblox. Check out our lounge, explore detailed airports, 
-            and enjoy flight experiences as a passenger – or maybe treat yourself to a first-class flight?
-        </p>
+        <p>FlySphere is a virtual airline on Roblox, created by MrTacoGaming76, offering an immersive aviation experience. Join our community and soar to new heights!</p>
     </section>
 
     <section id="features">
         <h2>Features</h2>
         <div class="gallery-grid">
             <div class="gallery-item">
-                <img src="img/airport.png" alt="Airport Terminal" class="gallery-image">
+                <img src="img/airport.webp" alt="Airport Terminal" class="gallery-image">
                 <p>Explore realistic airport terminals</p>
             </div>
             <div class="gallery-item">
-                <img src="img/aircraft.png" alt="Ground Operations" class="gallery-image">
-                <p>Experience realistic ground operations</p>
+                <img src="img/plane-interior.webp" alt="Plane Interior" class="gallery-image">
+                <p>Experience detailed plane interiors</p>
             </div>
             <div class="gallery-item">
-                <img src="img/lounge.png" alt="Lounges" class="gallery-image">
-                <p>Relax in the passenger lounge</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="stats">
-        <h2>FlySphere in Numbers</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>+++</h3>
-                <p>Flights Launched</p>
-            </div>
-            <div class="stat-item">
-                <h3>2</h3>
-                <p>Airports to Explore</p>
-            </div>
-            <div class="stat-item">
-                <h3>+++</h3>
-                <p>Passengers Transported</p>
+                <img src="img/sunset-flight.webp" alt="Sunset Flight" class="gallery-image">
+                <p>Fly through stunning skies</p>
             </div>
         </div>
     </section>
@@ -106,16 +84,16 @@
         <h2>Latest Updates</h2>
         <div class="update-list">
             <div class="update-item">
-                <h3>New: Bus operations</h3>
-                <p><strong>Mar 11, 2025</strong> - Now available to transfer passengers from the terminal to the aircraft!</p>
+                <h3>New Aircraft Added</h3>
+                <p>We've introduced the Boeing 787 Dreamliner to our fleet!</p>
             </div>
             <div class="update-item">
-                <h3>Event: Inaugural Flight</h3>
-                <p><strong>Apr 5, 2025, 4:00 PM CET</strong> - Join us for the first public flight!</p>
+                <h3>Airport Expansion</h3>
+                <p>Our main hub now features a new international terminal.</p>
             </div>
             <div class="countdown">
-                <h3>Inaugural Flight Countdown</h3>
-                <div class="countdown-timer" id="countdown-timer">
+                <h3>Next Major Update</h3>
+                <div class="countdown-timer">
                     <div class="desktop-countdown">
                         <div class="time-unit">
                             <span id="days">00</span>
@@ -135,16 +113,8 @@
                         </div>
                     </div>
                     <div class="mobile-countdown">
-                        <svg width="200" height="200" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="days-circle"/>
-                            <circle cx="100" cy="100" r="70" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="439.82" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="hours-circle"/>
-                            <circle cx="100" cy="100" r="50" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="minutes-circle"/>
-                            <circle cx="100" cy="100" r="30" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="188.49" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="seconds-circle"/>
-                            <rect x="70" y="40" width="60" height="120" fill="#003087" rx="10" opacity="0.8"/>
-                            <text id="mobile-days" x="100" y="70" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00d</text>
-                            <text id="mobile-hours" x="100" y="95" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00h</text>
-                            <text id="mobile-minutes" x="100" y="120" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00m</text>
-                            <text id="mobile-seconds" x="100" y="145" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00s</text>
+                        <svg viewBox="0 0 200 50">
+                            <text x="50%" y="50%" text-anchor="middle" id="mobile-timer">00:00:00:00</text>
                         </svg>
                     </div>
                 </div>
@@ -156,13 +126,13 @@
         <section id="play">
             <h2>Play Now</h2>
             <p>Join FlySphere on Roblox and start your aviation adventure today!</p>
-            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Play Now</a>
+            <a href="https://www.roblox.com/games/123456789/FlySphere" target="_blank" class="cta-button">Play Now</a>
         </section>
 
         <section id="community">
             <h2>Join Our Community</h2>
             <p>Connect with fellow aviation enthusiasts in our Discord server!</p>
-            <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
+            <a href="https://discord.gg/flysphere" target="_blank" class="community-button">Join Discord</a>
         </section>
     </div>
 
@@ -171,22 +141,26 @@
         <div class="testimonial-grid">
             <div class="testimonial-item">
                 <p>"FlySphere is the best Roblox airline experience!"</p>
-                <p>- bre0zd</p>
+                <p>- SkyCaptain123</p>
             </div>
             <div class="testimonial-item">
                 <p>"The attention to detail is incredible."</p>
-                <p>- Anonymous</p>
+                <p>- AviatorFan</p>
+            </div>
+            <div class="testimonial-item">
+                <p>"I love the community events!"</p>
+                <p>- FlyGirl2000</p>
             </div>
         </div>
     </section>
 
     <div class="lightbox" id="lightbox">
-        <span class="lightbox-close">&times;</span>
+        <span class="lightbox-close">×</span>
         <img class="lightbox-content" id="lightbox-image">
     </div>
 
     <footer>
-        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> / <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">MrTacoGaming76</a> - Your Virtual Airline on Roblox</p>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
     </footer>
 
     <script>
@@ -233,7 +207,6 @@
                 }
             });
 
-            // Close menu on link click
             navLinks.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     console.log('Nav link clicked:', link.textContent);
@@ -320,7 +293,7 @@
 
         // Countdown
         function startCountdown() {
-            const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime();
+            const countdownDate = new Date('2025-06-01T00:00:00').getTime();
             const timer = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = countdownDate - now;
@@ -338,7 +311,7 @@
 
                 if (distance < 0) {
                     clearInterval(timer);
-                    document.querySelector('.countdown-timer').textContent = 'Flight Has Launched!';
+                    document.querySelector('.countdown-timer').textContent = 'Update Released!';
                 }
             }, 1000);
         }
