@@ -625,8 +625,9 @@
                     onSnapshot(leavesQuery, snapshot => {
                         try {
                             leaveTable.innerHTML = '';
-                            if (snapshot.empty && !isAdmin) {
-                                console.log('No leaves found for staff:', userEmail);
+                            console.log('Leaves snapshot:', snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+                            if (snapshot.empty) {
+                                console.log('No leaves found for:', isAdmin ? 'admin' : `staff (${userEmail})`);
                             } else {
                                 snapshot.forEach(doc => {
                                     const leave = doc.data();
@@ -658,7 +659,7 @@
                             updateSyncStatus();
                         }
                     }, error => {
-                        console.error('Leaves listener error:', error);
+                        console.error('Leaves listener error:', error.message, error.code);
                         syncStates.leaves = false;
                         updateSyncStatus();
                     });
