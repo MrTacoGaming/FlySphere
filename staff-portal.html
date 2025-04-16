@@ -89,7 +89,6 @@
                     <input type="email" id="email" placeholder="Email" required aria-label="Email">
                     <input type="password" id="password" placeholder="Password" required aria-label="Password">
                     <button class="cta-button" onclick="login()">Login</button>
-                    <button class="cta-button" onclick="signUp()">Sign Up</button>
                 </div>
                 <p id="login-error" style="color: #DC3545; display: none;" aria-live="polite"></p>
             </div>
@@ -101,6 +100,19 @@
             </div>
             <div id="admin-controls" style="display: none;">
                 <h3>Admin Controls</h3>
+                <div class="admin-section">
+                    <h4>Manage Staff Accounts</h4>
+                    <div class="form-group">
+                        <input type="email" id="new-staff-email" placeholder="New Staff Email" required aria-label="New Staff Email">
+                        <input type="password" id="new-staff-password" placeholder="New Staff Password" required aria-label="New Staff Password">
+                        <select id="new-staff-role" required aria-label="New Staff Role">
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button class="small-cta" onclick="signUp()">Create Account</button>
+                    </div>
+                    <p id="signup-error" style="color: #DC3545; display: none;" aria-live="polite"></p>
+                </div>
                 <div class="admin-section">
                     <h4>Manage Schedules</h4>
                     <div class="form-group">
@@ -229,13 +241,14 @@
                 }
 
                 if (user) {
+                    console.log('User authenticated, fetching role...');
                     loginSection.style.display = 'none';
                     staffContent.style.display = 'block';
                     syncStatus.textContent = 'Syncing...';
                     const userDoc = await getDoc(doc(db, 'users', user.uid));
                     const isAdmin = userDoc.exists() && userDoc.data().role === 'admin';
+                    console.log('User role:', isAdmin ? 'admin' : 'staff');
                     if (isAdmin) {
-                        console.log('Admin user, showing controls');
                         adminControls.style.display = 'block';
                         adminOnlyElements.forEach(el => el.style.display = 'table-cell');
                     } else {
@@ -245,6 +258,7 @@
                     loadTables();
                     syncStatus.textContent = 'Synced';
                 } else {
+                    console.log('No user, showing login section');
                     loginSection.style.display = 'block';
                     staffContent.style.display = 'none';
                     adminControls.style.display = 'none';
@@ -278,9 +292,10 @@
                     return;
                 }
 
+                console.log('Attempting login for:', email);
                 signInWithEmailAndPassword(auth, email, password)
-                    .then(() => {
-                        console.log('Logged in:', email);
+                    .then(userCredential => {
+                        console.log('Login successful:', userCredential.user.email);
                         errorElement.style.display = 'none';
                         emailInput.value = '';
                         passwordInput.value = '';
@@ -288,12 +303,14 @@
                     .catch(error => {
                         console.error('Login error:', error.code, error.message);
                         let message = error.message;
-                        if (error.code === 'auth/wrong-password') {
-                            message = 'Incorrect password. Please try again.';
+                        if (error.code === 'auth/invalid-credential') {
+                            message = 'Invalid email or password. Please try again.';
                         } else if (error.code === 'auth/user-not-found') {
                             message = 'No user found with this email.';
                         } else if (error.code === 'auth/invalid-email') {
                             message = 'Invalid email format.';
+                        } else if (error.code === 'auth/too-many-requests') {
+                            message = 'Too many attempts. Please try again later.';
                         }
                         errorElement.textContent = message;
                         errorElement.style.display = 'block';
@@ -301,44 +318,63 @@
                         passwordInput.value = '';
                     });
             } catch (error) {
-                console.error('Error in login:', error);
+                console.error('Unexpected error in login:', error);
             }
         }
 
-        // Sign Up
-        function signUp() {
+        // Sign Up (Admin Only)
+        async function signUp() {
             console.log('Sign Up button clicked');
             try {
-                const emailInput = document.getElementById('email');
-                const passwordInput = document.getElementById('password');
-                const errorElement = document.getElementById('login-error');
+                const emailInput = document.getElementById('new-staff-email');
+                const passwordInput = document.getElementById('new-staff-password');
+                const roleInput = document.getElementById('new-staff-role');
+                const errorElement = document.getElementById('signup-error');
 
-                if (!emailInput || !passwordInput || !errorElement) {
+                if (!emailInput || !passwordInput || !roleInput || !errorElement) {
                     console.error('Sign-up form elements not found');
+                    return;
+                }
+
+                // Verify current user is admin
+                const user = auth.currentUser;
+                if (!user) {
+                    errorElement.textContent = 'You must be logged in to create accounts.';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (!userDoc.exists() || userDoc.data().role !== 'admin') {
+                    errorElement.textContent = 'Only admins can create new accounts.';
+                    errorElement.style.display = 'block';
                     return;
                 }
 
                 const email = emailInput.value.trim();
                 const password = passwordInput.value;
+                const role = roleInput.value;
 
-                if (!email || !password) {
-                    errorElement.textContent = 'Please enter both email and password.';
+                if (!email || !password || !role) {
+                    errorElement.textContent = 'Please fill all fields.';
                     errorElement.style.display = 'block';
                     return;
                 }
 
+                console.log('Creating account for:', email);
                 createUserWithEmailAndPassword(auth, email, password)
                     .then(userCredential => {
-                        console.log('Signed up:', email);
+                        console.log('Account created:', email);
                         return setDoc(doc(db, 'users', userCredential.user.uid), {
                             email: email,
-                            role: 'staff' // Default role; admin must be set manually
+                            role: role
                         });
                     })
                     .then(() => {
                         errorElement.style.display = 'none';
                         emailInput.value = '';
                         passwordInput.value = '';
+                        roleInput.value = 'staff';
+                        alert('Account created successfully!');
                     })
                     .catch(error => {
                         console.error('Sign-up error:', error.code, error.message);
@@ -352,11 +388,9 @@
                         }
                         errorElement.textContent = message;
                         errorElement.style.display = 'block';
-                        emailInput.value = '';
-                        passwordInput.value = '';
                     });
             } catch (error) {
-                console.error('Error in signUp:', error);
+                console.error('Unexpected error in signUp:', error);
             }
         }
 
