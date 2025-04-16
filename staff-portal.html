@@ -142,87 +142,18 @@
 
         // Initialize Firebase
         let auth, db;
+        let firebaseInitialized = false;
         try {
             const app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
+            firebaseInitialized = true;
             console.log('Firebase initialized successfully');
         } catch (error) {
             console.error('Error initializing Firebase:', error);
             alert('Failed to connect to Firebase. Please check your network and try again.');
-            return;
+            // Continue with limited functionality
         }
-
-        // Check auth state
-        if (typeof onAuthStateChanged !== 'function') {
-            console.error('onAuthStateChanged is not defined');
-            alert('Firebase Authentication failed to load. Please refresh the page.');
-            return;
-        }
-
-        onAuthStateChanged(auth, async user => {
-            console.log('onAuthStateChanged triggered:', user ? user.email : 'No user');
-            try {
-                const loginSection = document.getElementById('login-section');
-                const staffContent = document.getElementById('staff-content');
-                const adminControls = document.getElementById('admin-controls');
-                const adminOnlyElements = document.querySelectorAll('.admin-only');
-                const syncStatus = document.getElementById('sync-status');
-
-                console.log('Checking DOM elements...');
-                if (!loginSection || !staffContent || !adminControls || !syncStatus) {
-                    console.error('DOM elements missing:', {
-                        loginSection: !!loginSection,
-                        staffContent: !!staffContent,
-                        adminControls: !!adminControls,
-                        syncStatus: !!syncStatus
-                    });
-                    return;
-                }
-
-                if (user) {
-                    console.log('User authenticated, updating UI...');
-                    loginSection.style.display = 'none';
-                    staffContent.style.display = 'block';
-                    syncStatus.textContent = 'Syncing...';
-
-                    console.log('Fetching user role for UID:', user.uid);
-                    let isAdmin = false;
-                    try {
-                        const userDoc = await getDoc(doc(db, 'users', user.uid));
-                        isAdmin = userDoc.exists() && userDoc.data().role === 'admin';
-                        console.log('User role fetched:', isAdmin ? 'admin' : 'staff');
-                    } catch (error) {
-                        console.error('Error fetching user role:', error);
-                        // Fallback: assume non-admin if Firestore query fails
-                        isAdmin = false;
-                    }
-
-                    if (isAdmin) {
-                        console.log('Showing admin controls');
-                        adminControls.style.display = 'block';
-                        adminOnlyElements.forEach(el => el.style.display = 'table-cell');
-                    } else {
-                        console.log('Hiding admin controls');
-                        adminControls.style.display = 'none';
-                        adminOnlyElements.forEach(el => el.style.display = 'none');
-                    }
-
-                    console.log('Loading tables...');
-                    loadTables();
-                    syncStatus.textContent = 'Synced';
-                } else {
-                    console.log('No user, showing login section');
-                    loginSection.style.display = 'block';
-                    staffContent.style.display = 'none';
-                    adminControls.style.display = 'none';
-                    adminOnlyElements.forEach(el => el.style.display = 'none');
-                    syncStatus.textContent = '';
-                }
-            } catch (error) {
-                console.error('Error in onAuthStateChanged:', error);
-            }
-        });
 
         // Theme toggle
         document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -281,396 +212,506 @@
             }
         });
 
-        // Login
-        window.login = function() {
-            console.log('Login button clicked');
-            try {
-                const emailInput = document.getElementById('email');
-                const passwordInput = document.getElementById('password');
-                const errorElement = document.getElementById('login-error');
+        // Firebase-dependent functions
+        if (firebaseInitialized) {
+            // Check auth state
+            if (typeof onAuthStateChanged === 'function') {
+                onAuthStateChanged(auth, async user => {
+                    console.log('onAuthStateChanged triggered:', user ? user.email : 'No user');
+                    try {
+                        const loginSection = document.getElementById('login-section');
+                        const staffContent = document.getElementById('staff-content');
+                        const adminControls = document.getElementById('admin-controls');
+                        const adminOnlyElements = document.querySelectorAll('.admin-only');
+                        const syncStatus = document.getElementById('sync-status');
 
-                if (!emailInput || !passwordInput || !errorElement) {
-                    console.error('Login form elements not found');
-                    return;
-                }
-
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-
-                if (!email || !password) {
-                    errorElement.textContent = 'Please enter both email and password.';
-                    errorElement.style.display = 'block';
-                    return;
-                }
-
-                console.log('Attempting login for:', email);
-                signInWithEmailAndPassword(auth, email, password)
-                    .then(userCredential => {
-                        console.log('Login successful:', userCredential.user.email);
-                        errorElement.style.display = 'none';
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                        // Force auth state check
-                        console.log('Forcing auth state check...');
-                        if (auth.currentUser) {
-                            console.log('Current user detected:', auth.currentUser.email);
-                            document.getElementById('login-section').style.display = 'none';
-                            document.getElementById('staff-content').style.display = 'block';
-                            document.getElementById('sync-status').textContent = 'Syncing...';
+                        console.log('Checking DOM elements...');
+                        if (!loginSection || !staffContent || !adminControls || !syncStatus) {
+                            console.error('DOM elements missing:', {
+                                loginSection: !!loginSection,
+                                staffContent: !!staffContent,
+                                adminControls: !!adminControls,
+                                syncStatus: !!syncStatus
+                            });
+                            return;
                         }
-                    })
-                    .catch(error => {
-                        console.error('Login error:', error.code, error.message);
-                        let message = error.message;
-                        if (error.code === 'auth/invalid-credential') {
-                            message = 'Invalid email or password. Please try again.';
-                        } else if (error.code === 'auth/user-not-found') {
-                            message = 'No user found with this email.';
-                        } else if (error.code === 'auth/invalid-email') {
-                            message = 'Invalid email format.';
-                        } else if (error.code === 'auth/too-many-requests') {
-                            message = 'Too many attempts. Please try again later.';
+
+                        if (user) {
+                            console.log('User authenticated, updating UI...');
+                            loginSection.style.display = 'none';
+                            staffContent.style.display = 'block';
+                            syncStatus.textContent = 'Syncing...';
+
+                            console.log('Fetching user role for UID:', user.uid);
+                            let isAdmin = false;
+                            try {
+                                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                                isAdmin = userDoc.exists() && userDoc.data().role === 'admin';
+                                console.log('User role fetched:', isAdmin ? 'admin' : 'staff');
+                            } catch (error) {
+                                console.error('Error fetching user role:', error);
+                                isAdmin = false;
+                            }
+
+                            if (isAdmin) {
+                                console.log('Showing admin controls');
+                                adminControls.style.display = 'block';
+                                adminOnlyElements.forEach(el => el.style.display = 'table-cell');
+                            } else {
+                                console.log('Hiding admin controls');
+                                adminControls.style.display = 'none';
+                                adminOnlyElements.forEach(el => el.style.display = 'none');
+                            }
+
+                            console.log('Loading tables...');
+                            loadTables();
+                            syncStatus.textContent = 'Synced';
+                        } else {
+                            console.log('No user, showing login section');
+                            loginSection.style.display = 'block';
+                            staffContent.style.display = 'none';
+                            adminControls.style.display = 'none';
+                            adminOnlyElements.forEach(el => el.style.display = 'none');
+                            syncStatus.textContent = '';
                         }
-                        errorElement.textContent = message;
-                        errorElement.style.display = 'block';
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                    });
-            } catch (error) {
-                console.error('Unexpected error in login:', error);
+                    } catch (error) {
+                        console.error('Error in onAuthStateChanged:', error);
+                    }
+                });
+            } else {
+                console.error('onAuthStateChanged is not defined');
+                alert('Firebase Authentication failed to load. Please refresh the page.');
             }
-        };
 
-        // Sign Up (Admin Only)
-        window.signUp = async function() {
-            console.log('Sign Up button clicked');
-            try {
-                const emailInput = document.getElementById('new-staff-email');
-                const passwordInput = document.getElementById('new-staff-password');
-                const roleInput = document.getElementById('new-staff-role');
-                const errorElement = document.getElementById('signup-error');
+            // Login
+            window.login = function() {
+                console.log('Login button clicked');
+                try {
+                    const emailInput = document.getElementById('email');
+                    const passwordInput = document.getElementById('password');
+                    const errorElement = document.getElementById('login-error');
 
-                if (!emailInput || !passwordInput || !roleInput || !errorElement) {
-                    console.error('Sign-up form elements not found');
-                    return;
-                }
+                    if (!emailInput || !passwordInput || !errorElement) {
+                        console.error('Login form elements not found');
+                        return;
+                    }
 
-                // Verify current user is admin
-                const user = auth.currentUser;
-                if (!user) {
-                    errorElement.textContent = 'You must be logged in to create accounts.';
-                    errorElement.style.display = 'block';
-                    return;
-                }
-                const userDoc = await getDoc(doc(db, 'users', user.uid));
-                if (!userDoc.exists() || userDoc.data().role !== 'admin') {
-                    errorElement.textContent = 'Only admins can create new accounts.';
-                    errorElement.style.display = 'block';
-                    return;
-                }
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
 
-                const email = emailInput.value.trim();
-                const password = passwordInput.value;
-                const role = roleInput.value;
+                    if (!email || !password) {
+                        errorElement.textContent = 'Please enter both email and password.';
+                        errorElement.style.display = 'block';
+                        return;
+                    }
 
-                if (!email || !password || !role) {
-                    errorElement.textContent = 'Please fill all fields.';
-                    errorElement.style.display = 'block';
-                    return;
-                }
-
-                console.log('Creating account for:', email);
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then(userCredential => {
-                        console.log('Account created:', email);
-                        return setDoc(doc(db, 'users', userCredential.user.uid), {
-                            email: email,
-                            role: role
+                    console.log('Attempting login for:', email);
+                    signInWithEmailAndPassword(auth, email, password)
+                        .then(userCredential => {
+                            console.log('Login successful:', userCredential.user.email);
+                            errorElement.style.display = 'none';
+                            emailInput.value = '';
+                            passwordInput.value = '';
+                            console.log('Forcing auth state check...');
+                            if (auth.currentUser) {
+                                console.log('Current user detected:', auth.currentUser.email);
+                                document.getElementById('login-section').style.display = 'none';
+                                document.getElementById('staff-content').style.display = 'block';
+                                document.getElementById('sync-status').textContent = 'Syncing...';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Login error:', error.code, error.message);
+                            let message = error.message;
+                            if (error.code === 'auth/invalid-credential') {
+                                message = 'Invalid email or password. Please try again.';
+                            } else if (error.code === 'auth/user-not-found') {
+                                message = 'No user found with this email.';
+                            } else if (error.code === 'auth/invalid-email') {
+                                message = 'Invalid email format.';
+                            } else if (error.code === 'auth/too-many-requests') {
+                                message = 'Too many attempts. Please try again later.';
+                            }
+                            errorElement.textContent = message;
+                            errorElement.style.display = 'block';
+                            emailInput.value = '';
+                            passwordInput.value = '';
                         });
-                    })
-                    .then(() => {
-                        errorElement.style.display = 'none';
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                        roleInput.value = 'staff';
-                        alert('Account created successfully!');
-                    })
-                    .catch(error => {
-                        console.error('Sign-up error:', error.code, error.message);
-                        let message = error.message;
-                        if (error.code === 'auth/email-already-in-use') {
-                            message = 'This email is already registered.';
-                        } else if (error.code === 'auth/invalid-email') {
-                            message = 'Invalid email format.';
-                        } else if (error.code === 'auth/weak-password') {
-                            message = 'Password is too weak. Use at least 6 characters.';
-                        }
-                        errorElement.textContent = message;
+                } catch (error) {
+                    console.error('Unexpected error in login:', error);
+                }
+            };
+
+            // Sign Up (Admin Only)
+            window.signUp = async function() {
+                console.log('Sign Up button clicked');
+                try {
+                    const emailInput = document.getElementById('new-staff-email');
+                    const passwordInput = document.getElementById('new-staff-password');
+                    const roleInput = document.getElementById('new-staff-role');
+                    const errorElement = document.getElementById('signup-error');
+
+                    if (!emailInput || !passwordInput || !roleInput || !errorElement) {
+                        console.error('Sign-up form elements not found');
+                        return;
+                    }
+
+                    const user = auth.currentUser;
+                    if (!user) {
+                        errorElement.textContent = 'You must be logged in to create accounts.';
                         errorElement.style.display = 'block';
-                    });
-            } catch (error) {
-                console.error('Unexpected error in signUp:', error);
-            }
-        };
+                        return;
+                    }
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (!userDoc.exists() || userDoc.data().role !== 'admin') {
+                        errorElement.textContent = 'Only admins can create new accounts.';
+                        errorElement.style.display = 'block';
+                        return;
+                    }
 
-        // Logout
-        window.logout = function() {
-            console.log('Logout clicked');
-            try {
-                signOut(auth).then(() => {
-                    console.log('Logged out');
-                    document.getElementById('email').value = '';
-                    document.getElementById('password').value = '';
-                }).catch(error => {
-                    console.error('Logout error:', error);
-                });
-            } catch (error) {
-                console.error('Error in logout:', error);
-            }
-        };
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
+                    const role = roleInput.value;
 
-        // Load tables with real-time listeners
-        async function loadTables() {
-            console.log('Loading tables');
-            try {
-                const scheduleTable = document.getElementById('schedule-table');
-                const eventTable = document.getElementById('event-table');
+                    if (!email || !password || !role) {
+                        errorElement.textContent = 'Please fill all fields.';
+                        errorElement.style.display = 'block';
+                        return;
+                    }
 
-                if (!scheduleTable || !eventTable) {
-                    console.error('Table elements not found');
-                    return;
+                    console.log('Creating account for:', email);
+                    createUserWithEmailAndPassword(auth, email, password)
+                        .then(userCredential => {
+                            console.log('Account created:', email);
+                            return setDoc(doc(db, 'users', userCredential.user.uid), {
+                                email: email,
+                                role: role
+                            });
+                        })
+                        .then(() => {
+                            errorElement.style.display = 'none';
+                            emailInput.value = '';
+                            passwordInput.value = '';
+                            roleInput.value = 'staff';
+                            alert('Account created successfully!');
+                        })
+                        .catch(error => {
+                            console.error('Sign-up error:', error.code, error.message);
+                            let message = error.message;
+                            if (error.code === 'auth/email-already-in-use') {
+                                message = 'This email is already registered.';
+                            } else if (error.code === 'auth/invalid-email') {
+                                message = 'Invalid email format.';
+                            } else if (error.code === 'auth/weak-password') {
+                                message = 'Password is too weak. Use at least 6 characters.';
+                            }
+                            errorElement.textContent = message;
+                            errorElement.style.display = 'block';
+                        });
+                } catch (error) {
+                    console.error('Unexpected error in signUp:', error);
                 }
+            };
 
-                const user = auth.currentUser;
-                const userDoc = user ? await getDoc(doc(db, 'users', user.uid)) : null;
-                const isAdmin = userDoc && userDoc.exists() && userDoc.data().role === 'admin';
-
-                // Real-time schedules
-                onSnapshot(collection(db, 'schedules'), orderBy('date'), snapshot => {
-                    scheduleTable.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const schedule = doc.data();
-                        const row = document.createElement('tr');
-                        row.classList.add('fade-in');
-                        row.innerHTML = `
-                            <td>${schedule.staff || ''}</td>
-                            <td>${schedule.date || ''}</td>
-                            <td>${schedule.time || ''}</td>
-                            <td>${schedule.task || ''}</td>
-                            <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                                <button class="small-cta" onclick="editSchedule('${doc.id}')">Edit</button>
-                                <button class="small-cta" onclick="deleteSchedule('${doc.id}')">Delete</button>
-                            </td>
-                        `;
-                        scheduleTable.appendChild(row);
+            // Logout
+            window.logout = function() {
+                console.log('Logout clicked');
+                try {
+                    signOut(auth).then(() => {
+                        console.log('Logged out');
+                        document.getElementById('email').value = '';
+                        document.getElementById('password').value = '';
+                    }).catch(error => {
+                        console.error('Logout error:', error);
                     });
-                });
+                } catch (error) {
+                    console.error('Error in logout:', error);
+                }
+            };
 
-                // Real-time events
-                onSnapshot(collection(db, 'events'), orderBy('date'), snapshot => {
-                    eventTable.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const event = doc.data();
-                        const row = document.createElement('tr');
-                        row.classList.add('fade-in');
-                        row.innerHTML = `
-                            <td>${event.title || ''}</td>
-                            <td>${event.date || ''}</td>
-                            <td>${event.time || ''}</td>
-                            <td>${event.location || ''}</td>
-                            <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                                <button class="small-cta" onclick="editEvent('${doc.id}')">Edit</button>
-                                <button class="small-cta" onclick="deleteEvent('${doc.id}')">Delete</button>
-                            </td>
-                        `;
-                        eventTable.appendChild(row);
+            // Load tables with real-time listeners
+            async function loadTables() {
+                console.log('Loading tables');
+                try {
+                    const scheduleTable = document.getElementById('schedule-table');
+                    const eventTable = document.getElementById('event-table');
+
+                    if (!scheduleTable || !eventTable) {
+                        console.error('Table elements not found');
+                        return;
+                    }
+
+                    const user = auth.currentUser;
+                    const userDoc = user ? await getDoc(doc(db, 'users', user.uid)) : null;
+                    const isAdmin = userDoc && userDoc.exists() && userDoc.data().role === 'admin';
+
+                    onSnapshot(collection(db, 'schedules'), orderBy('date'), snapshot => {
+                        scheduleTable.innerHTML = '';
+                        snapshot.forEach(doc => {
+                            const schedule = doc.data();
+                            const row = document.createElement('tr');
+                            row.classList.add('fade-in');
+                            row.innerHTML = `
+                                <td>${schedule.staff || ''}</td>
+                                <td>${schedule.date || ''}</td>
+                                <td>${schedule.time || ''}</td>
+                                <td>${schedule.task || ''}</td>
+                                <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                    <button class="small-cta" onclick="editSchedule('${doc.id}')">Edit</button>
+                                    <button class="small-cta" onclick="deleteSchedule('${doc.id}')">Delete</button>
+                                </td>
+                            `;
+                            scheduleTable.appendChild(row);
+                        });
                     });
-                });
-            } catch (error) {
-                console.error('Error in loadTables:', error);
+
+                    onSnapshot(collection(db, 'events'), orderBy('date'), snapshot => {
+                        eventTable.innerHTML = '';
+                        snapshot.forEach(doc => {
+                            const event = doc.data();
+                            const row = document.createElement('tr');
+                            row.classList.add('fade-in');
+                            row.innerHTML = `
+                                <td>${event.title || ''}</td>
+                                <td>${event.date || ''}</td>
+                                <td>${event.time || ''}</td>
+                                <td>${event.location || ''}</td>
+                                <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                    <button class="small-cta" onclick="editEvent('${doc.id}')">Edit</button>
+                                    <button class="small-cta" onclick="deleteEvent('${doc.id}')">Delete</button>
+                                </td>
+                            `;
+                            eventTable.appendChild(row);
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error in loadTables:', error);
+                }
             }
+
+            // Add schedule
+            window.addSchedule = function() {
+                console.log('Add schedule clicked');
+                try {
+                    const staffInput = document.getElementById('schedule-staff');
+                    const dateInput = document.getElementById('schedule-date');
+                    const timeInput = document.getElementById('schedule-time');
+                    const taskInput = document.getElementById('schedule-task');
+
+                    if (!staffInput || !dateInput || !timeInput || !taskInput) {
+                        console.error('Schedule form elements not found');
+                        return;
+                    }
+
+                    const staff = staffInput.value.trim();
+                    const date = dateInput.value;
+                    const time = timeInput.value;
+                    const task = taskInput.value.trim();
+
+                    if (staff && date && time && task) {
+                        addDoc(collection(db, 'schedules'), {
+                            staff,
+                            date,
+                            time,
+                            task,
+                            createdBy: auth.currentUser.uid
+                        }).then(() => {
+                            console.log('Schedule added:', { staff, date, time, task });
+                            clearForm('schedule');
+                        });
+                    } else {
+                        alert('Please fill all fields.');
+                    }
+                } catch (error) {
+                    console.error('Error in addSchedule:', error);
+                }
+            };
+
+            // Add event
+            window.addEvent = function() {
+                console.log('Add event clicked');
+                try {
+                    const titleInput = document.getElementById('event-title');
+                    const dateInput = document.getElementById('event-date');
+                    const timeInput = document.getElementById('event-time');
+                    const locationInput = document.getElementById('event-location');
+
+                    if (!titleInput || !dateInput || !timeInput || !locationInput) {
+                        console.error('Event form elements not found');
+                        return;
+                    }
+
+                    const title = titleInput.value.trim();
+                    const date = dateInput.value;
+                    const time = timeInput.value;
+                    const location = locationInput.value.trim();
+
+                    if (title && date && time && location) {
+                        addDoc(collection(db, 'events'), {
+                            title,
+                            date,
+                            time,
+                            location,
+                            createdBy: auth.currentUser.uid
+                        }).then(() => {
+                            console.log('Event added:', { title, date, time, location });
+                            clearForm('event');
+                        });
+                    } else {
+                        alert('Please fill all fields.');
+                    }
+                } catch (error) {
+                    console.error('Error in addEvent:', error);
+                }
+            };
+
+            // Edit schedule
+            window.editSchedule = function(id) {
+                console.log('Edit schedule:', id);
+                try {
+                    getDoc(doc(db, 'schedules', id)).then(doc => {
+                        if (doc.exists()) {
+                            const schedule = doc.data();
+                            const staffInput = document.getElementById('schedule-staff');
+                            const dateInput = document.getElementById('schedule-date');
+                            const timeInput = document.getElementById('schedule-time');
+                            const taskInput = document.getElementById('schedule-task');
+
+                            if (staffInput && dateInput && timeInput && taskInput) {
+                                staffInput.value = schedule.staff || '';
+                                dateInput.value = schedule.date || '';
+                                timeInput.value = schedule.time || '';
+                                taskInput.value = schedule.task || '';
+                                deleteDoc(doc(db, 'schedules', id));
+                                console.log('Schedule prepared for edit:', id);
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error in editSchedule:', error);
+                }
+            };
+
+            // Delete schedule
+            window.deleteSchedule = function(id) {
+                console.log('Delete schedule:', id);
+                try {
+                    if (confirm('Are you sure you want to delete this schedule?')) {
+                        deleteDoc(doc(db, 'schedules', id)).then(() => {
+                            console.log('Schedule deleted:', id);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error in deleteSchedule:', error);
+                }
+            };
+
+            // Edit event
+            window.editEvent = function(id) {
+                console.log('Edit event:', id);
+                try {
+                    getDoc(doc(db, 'events', id)).then(doc => {
+                        if (doc.exists()) {
+                            const event = doc.data();
+                            const titleInput = document.getElementById('event-title');
+                            const dateInput = document.getElementById('event-date');
+                            const timeInput = document.getElementById('event-time');
+                            const locationInput = document.getElementById('event-location');
+
+                            if (titleInput && dateInput && timeInput && locationInput) {
+                                titleInput.value = event.title || '';
+                                dateInput.value = event.date || '';
+                                timeInput.value = event.time || '';
+                                locationInput.value = event.location || '';
+                                deleteDoc(doc(db, 'events', id));
+                                console.log('Event prepared for edit:', id);
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error in editEvent:', error);
+                }
+            };
+
+            // Delete event
+            window.deleteEvent = function(id) {
+                console.log('Delete event:', id);
+                try {
+                    if (confirm('Are you sure you want to delete this event?')) {
+                        deleteDoc(doc(db, 'events', id)).then(() => {
+                            console.log('Event deleted:', id);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error in deleteEvent:', error);
+                }
+            };
+
+            // Clear form
+            window.clearForm = function(type) {
+                console.log('Clearing form:', type);
+                try {
+                    const prefix = type === 'schedule' ? 'schedule-' : 'event-';
+                    const staffInput = document.getElementById(`${prefix}staff`);
+                    const titleInput = document.getElementById(`${prefix}title`);
+                    const dateInput = document.getElementById(`${prefix}date`);
+                    const timeInput = document.getElementById(`${prefix}time`);
+                    const taskInput = document.getElementById(`${prefix}task`);
+                    const locationInput = document.getElementById(`${prefix}location`);
+
+                    if (staffInput) staffInput.value = '';
+                    if (titleInput) titleInput.value = '';
+                    if (dateInput) dateInput.value = '';
+                    if (timeInput) timeInput.value = '';
+                    if (taskInput) taskInput.value = '';
+                    if (locationInput) locationInput.value = '';
+                } catch (error) {
+                    console.error('Error in clearForm:', error);
+                }
+            };
+        } else {
+            // Fallback for non-Firebase functionality
+            window.login = function() {
+                console.log('Login button clicked');
+                alert('Authentication is currently unavailable. Please try again later.');
+            };
+            window.signUp = function() {
+                console.log('Sign Up button clicked');
+                alert('Account creation is currently unavailable. Please try again later.');
+            };
+            window.logout = function() {
+                console.log('Logout button clicked');
+                alert('Logout is currently unavailable. Please try again later.');
+            };
+            window.addSchedule = function() {
+                console.log('Add schedule clicked');
+                alert('Adding schedules is currently unavailable. Please try again later.');
+            };
+            window.addEvent = function() {
+                console.log('Add event clicked');
+                alert('Adding events is currently unavailable. Please try again later.');
+            };
+            window.editSchedule = function() {
+                console.log('Edit schedule clicked');
+                alert('Editing schedules is currently unavailable. Please try again later.');
+            };
+            window.deleteSchedule = function() {
+                console.log('Delete schedule clicked');
+                alert('Deleting schedules is currently unavailable. Please try again later.');
+            };
+            window.editEvent = function() {
+                console.log('Edit event clicked');
+                alert('Editing events is currently unavailable. Please try again later.');
+            };
+            window.deleteEvent = function() {
+                console.log('Delete event clicked');
+                alert('Deleting events is currently unavailable. Please try again later.');
+            };
+            window.clearForm = function() {
+                console.log('Clear form clicked');
+                alert('Clearing forms is currently unavailable. Please try again later.');
+            };
         }
-
-        // Add schedule
-        window.addSchedule = function() {
-            console.log('Add schedule clicked');
-            try {
-                const staffInput = document.getElementById('schedule-staff');
-                const dateInput = document.getElementById('schedule-date');
-                const timeInput = document.getElementById('schedule-time');
-                const taskInput = document.getElementById('schedule-task');
-
-                if (!staffInput || !dateInput || !timeInput || !taskInput) {
-                    console.error('Schedule form elements not found');
-                    return;
-                }
-
-                const staff = staffInput.value.trim();
-                const date = dateInput.value;
-                const time = timeInput.value;
-                const task = taskInput.value.trim();
-
-                if (staff && date && time && task) {
-                    addDoc(collection(db, 'schedules'), {
-                        staff,
-                        date,
-                        time,
-                        task,
-                        createdBy: auth.currentUser.uid
-                    }).then(() => {
-                        console.log('Schedule added:', { staff, date, time, task });
-                        clearForm('schedule');
-                    });
-                } else {
-                    alert('Please fill all fields.');
-                }
-            } catch (error) {
-                console.error('Error in addSchedule:', error);
-            }
-        };
-
-        // Add event
-        window.addEvent = function() {
-            console.log('Add event clicked');
-            try {
-                const titleInput = document.getElementById('event-title');
-                const dateInput = document.getElementById('event-date');
-                const timeInput = document.getElementById('event-time');
-                const locationInput = document.getElementById('event-location');
-
-                if (!titleInput || !dateInput || !timeInput || !locationInput) {
-                    console.error('Event form elements not found');
-                    return;
-                }
-
-                const title = titleInput.value.trim();
-                const date = dateInput.value;
-                const time = timeInput.value;
-                const location = locationInput.value.trim();
-
-                if (title && date && time && location) {
-                    addDoc(collection(db, 'events'), {
-                        title,
-                        date,
-                        time,
-                        location,
-                        createdBy: auth.currentUser.uid
-                    }).then(() => {
-                        console.log('Event added:', { title, date, time, location });
-                        clearForm('event');
-                    });
-                } else {
-                    alert('Please fill all fields.');
-                }
-            } catch (error) {
-                console.error('Error in addEvent:', error);
-            }
-        };
-
-        // Edit schedule
-        window.editSchedule = function(id) {
-            console.log('Edit schedule:', id);
-            try {
-                getDoc(doc(db, 'schedules', id)).then(doc => {
-                    if (doc.exists()) {
-                        const schedule = doc.data();
-                        const staffInput = document.getElementById('schedule-staff');
-                        const dateInput = document.getElementById('schedule-date');
-                        const timeInput = document.getElementById('schedule-time');
-                        const taskInput = document.getElementById('schedule-task');
-
-                        if (staffInput && dateInput && timeInput && taskInput) {
-                            staffInput.value = schedule.staff || '';
-                            dateInput.value = schedule.date || '';
-                            timeInput.value = schedule.time || '';
-                            taskInput.value = schedule.task || '';
-                            deleteDoc(doc(db, 'schedules', id));
-                            console.log('Schedule prepared for edit:', id);
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error in editSchedule:', error);
-            }
-        };
-
-        // Delete schedule
-        window.deleteSchedule = function(id) {
-            console.log('Delete schedule:', id);
-            try {
-                if (confirm('Are you sure you want to delete this schedule?')) {
-                    deleteDoc(doc(db, 'schedules', id)).then(() => {
-                        console.log('Schedule deleted:', id);
-                    });
-                }
-            } catch (error) {
-                console.error('Error in deleteSchedule:', error);
-            }
-        };
-
-        // Edit event
-        window.editEvent = function(id) {
-            console.log('Edit event:', id);
-            try {
-                getDoc(doc(db, 'events', id)).then(doc => {
-                    if (doc.exists()) {
-                        const event = doc.data();
-                        const titleInput = document.getElementById('event-title');
-                        const dateInput = document.getElementById('event-date');
-                        const timeInput = document.getElementById('event-time');
-                        const locationInput = document.getElementById('event-location');
-
-                        if (titleInput && dateInput && timeInput && locationInput) {
-                            titleInput.value = event.title || '';
-                            dateInput.value = event.date || '';
-                            timeInput.value = event.time || '';
-                            locationInput.value = event.location || '';
-                            deleteDoc(doc(db, 'events', id));
-                            console.log('Event prepared for edit:', id);
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error('Error in editEvent:', error);
-            }
-        };
-
-        // Delete event
-        window.deleteEvent = function(id) {
-            console.log('Delete event:', id);
-            try {
-                if (confirm('Are you sure you want to delete this event?')) {
-                    deleteDoc(doc(db, 'events', id)).then(() => {
-                        console.log('Event deleted:', id);
-                    });
-                }
-            } catch (error) {
-                console.error('Error in deleteEvent:', error);
-            }
-        };
-
-        // Clear form
-        window.clearForm = function(type) {
-            console.log('Clearing form:', type);
-            try {
-                const prefix = type === 'schedule' ? 'schedule-' : 'event-';
-                const staffInput = document.getElementById(`${prefix}staff`);
-                const titleInput = document.getElementById(`${prefix}title`);
-                const dateInput = document.getElementById(`${prefix}date`);
-                const timeInput = document.getElementById(`${prefix}time`);
-                const taskInput = document.getElementById(`${prefix}task`);
-                const locationInput = document.getElementById(`${prefix}location`);
-
-                if (staffInput) staffInput.value = '';
-                if (titleInput) titleInput.value = '';
-                if (dateInput) dateInput.value = '';
-                if (timeInput) timeInput.value = '';
-                if (taskInput) taskInput.value = '';
-                if (locationInput) locationInput.value = '';
-            } catch (error) {
-                console.error('Error in clearForm:', error);
-            }
-        };
     </script>
 </body>
 </html>
