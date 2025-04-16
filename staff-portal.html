@@ -40,7 +40,7 @@
             <li><a href="index.html#updates">Updates</a></li>
             <li><a href="index.html#play">Play</a></li>
             <li><a href="index.html#community">Community</a></li>
-            <li><a href="#">Staff Portal</a></li>
+            <li><a href="#" class="active">Staff Portal</a></li>
         </ul>
     </nav>
 
@@ -58,7 +58,12 @@
             </div>
         </div>
         <div id="staff-content" style="display: none;">
-            <button class="small-cta" onclick="logout()">Logout</button>
+            <div class="data-controls">
+                <button class="small-cta" onclick="exportData()">Export Data</button>
+                <input type="file" id="import-file" accept=".json" style="display: none;" aria-label="Import data file">
+                <button class="small-cta" onclick="document.getElementById('import-file').click()">Import Data</button>
+                <button class="small-cta" onclick="logout()">Logout</button>
+            </div>
             <div id="admin-controls" style="display: none;">
                 <h3>Admin Controls</h3>
                 <div class="admin-section">
@@ -142,7 +147,7 @@
             }
         });
 
-        // Hamburger menu (mobile only)
+        // Hamburger menu
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
         if (hamburger && navLinks) {
@@ -157,6 +162,18 @@
                 } catch (error) {
                     console.error('Error in hamburger toggle:', error);
                 }
+            });
+
+            // Close menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    console.log('Nav link clicked:', link.textContent);
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        hamburger.classList.remove('active');
+                        console.log('Menu closed after link click');
+                    }
+                });
             });
         } else {
             console.error('Hamburger or nav-links not found');
@@ -289,6 +306,62 @@
                 console.error('Error in logout:', error);
             }
         }
+
+        // Export data
+        function exportData() {
+            console.log('Export data clicked');
+            try {
+                const data = {
+                    schedules: JSON.parse(localStorage.getItem('schedules') || '[]'),
+                    events: JSON.parse(localStorage.getItem('events') || '[]')
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'flysphere-data.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                console.log('Data exported:', data);
+            } catch (error) {
+                console.error('Error in exportData:', error);
+                alert('Failed to export data.');
+            }
+        }
+
+        // Import data
+        document.getElementById('import-file').addEventListener('change', function(e) {
+            console.log('Import file selected');
+            try {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.schedules) {
+                            localStorage.setItem('schedules', JSON.stringify(data.schedules));
+                            console.log('Schedules imported:', data.schedules);
+                        }
+                        if (data.events) {
+                            localStorage.setItem('events', JSON.stringify(data.events));
+                            console.log('Events imported:', data.events);
+                        }
+                        loadTables();
+                        alert('Data imported successfully.');
+                        e.target.value = '';
+                    } catch (error) {
+                        console.error('Error parsing imported data:', error);
+                        alert('Invalid data format.');
+                    }
+                };
+                reader.readAsText(file);
+            } catch (error) {
+                console.error('Error in importData:', error);
+                alert('Failed to import data.');
+            }
+        });
 
         // Load tables
         function loadTables() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlySphere - Your UK Airline</title>
+    <title>FlySphere</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="favicon/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -21,15 +21,6 @@
     </script>
 </head>
 <body>
-    <div id="preloader">
-        <div class="propeller">
-            <div class="blade"></div>
-            <div class="blade"></div>
-            <div class="blade"></div>
-            <div class="blade"></div>
-        </div>
-    </div>
-
     <nav>
         <div class="logo">
             <h1>FlySphere</h1>
@@ -43,94 +34,66 @@
             <i class="fas fa-sun"></i>
         </button>
         <ul class="nav-links">
-            <li><a href="index.html#home">Home</a></li>
-            <li><a href="index.html#about">About</a></li>
-            <li><a href="index.html#features">Features</a></li>
-            <li><a href="index.html#updates">Updates</a></li>
-            <li><a href="index.html#play">Play</a></li>
-            <li><a href="index.html#community">Community</a></li>
-            <li><a href="#">Staff Portal</a></li>
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#updates">Updates</a></li>
+            <li><a href="#play">Play</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="staff-portal.html">Staff Portal</a></li>
         </ul>
     </nav>
 
     <header id="home">
         <div class="hero-slideshow">
-            <img src="img/AirportPicture.png" alt="FlySphere Hero 1" class="slide active" loading="lazy">
-            <img src="img/AircraftPicture.png" alt="FlySphere Hero 2" class="slide" loading="lazy">
-            <img src="img/Lounge.png" alt="FlySphere Hero 3" class="slide" loading="lazy">
-            <img src="img/Aircraft.png" alt="FlySphere Hero 4" class="slide" loading="lazy">
+            <img src="img/airport.webp" alt="Airport" class="slide active">
+            <img src="img/plane-interior.webp" alt="Plane Interior" class="slide">
+            <img src="img/sunset-flight.webp" alt="Sunset Flight" class="slide">
         </div>
         <div class="hero">
-            <h1>Welcome Aboard FlySphere</h1>
-            <p>Experience the luxury of FlySphere in our high-quality crafted airports.</p>
-            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Take Off Now</a>
+            <h1>FlySphere</h1>
+            <p>Your Ultimate Virtual Airline Experience on Roblox!</p>
+            <a href="#play" class="cta-button">Join Now</a>
         </div>
     </header>
 
     <section id="about">
         <h2>About FlySphere</h2>
-        <p>FlySphere brings the world of aviation to Roblox. Check out our lounge, explore detailed airports, and enjoy flight experiences as a passenger – or maybe treat yourself to a first-class flight?</p>
-        <p><a href="#play" class="cta-button">Start Your Adventure</a></p>
+        <p>FlySphere is a virtual airline on Roblox, created by MrTacoGaming76, offering an immersive aviation experience. Join our community and soar to new heights!</p>
     </section>
 
     <section id="features">
-        <h2>Our Highlights</h2>
+        <h2>Features</h2>
         <div class="gallery-grid">
             <div class="gallery-item">
-                <img src="img/AirportPicture.png" alt="Airport" class="gallery-image">
-                <p>Discover terminals, gates, and more.</p>
+                <img src="img/airport.webp" alt="Airport Terminal" class="gallery-image">
+                <p>Explore realistic airport terminals</p>
             </div>
             <div class="gallery-item">
-                <img src="img/AircraftPicture.png" alt="Passenger" class="gallery-image">
-                <p>Check in and enjoy the flight.</p>
+                <img src="img/plane-interior.webp" alt="Plane Interior" class="gallery-image">
+                <p>Experience detailed plane interiors</p>
             </div>
             <div class="gallery-item">
-                <img src="img/Aircraft.png" alt="Aircraft in FlySphere" class="gallery-image">
-                <p>A sleek aircraft ready for takeoff.</p>
-            </div>
-            <div class="gallery-item">
-                <img src="img/Lounge.png" alt="Passenger Area" class="gallery-image">
-                <p>Relax in the passenger lounge.</p>
-            </div>
-            <div class="gallery-item">
-                <img src="img/AirportPicture.png" alt="Crew" class="gallery-image">
-                <p>Join the Crew!</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="stats">
-        <h2>FlySphere in Numbers</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>+++</h3>
-                <p>Flights Launched</p>
-            </div>
-            <div class="stat-item">
-                <h3>2</h3>
-                <p>Airports to Explore</p>
-            </div>
-            <div class="stat-item">
-                <h3>+++</h3>
-                <p>Passengers Transported</p>
+                <img src="img/sunset-flight.webp" alt="Sunset Flight" class="gallery-image">
+                <p>Fly through stunning skies</p>
             </div>
         </div>
     </section>
 
     <section id="updates">
-        <h2>Latest at FlySphere</h2>
+        <h2>Latest Updates</h2>
         <div class="update-list">
             <div class="update-item">
-                <h3>New: Bus operations</h3>
-                <p><strong>Mar 11, 2025</strong> - Now available to transfer passengers from the terminal to the aircraft!</p>
+                <h3>New Aircraft Added</h3>
+                <p>We've introduced the Boeing 787 Dreamliner to our fleet!</p>
             </div>
             <div class="update-item">
-                <h3>Event: Inaugural Flight</h3>
-                <p><strong>Apr 5, 2025, 4:00 PM CET</strong> - Join us for the first public flight!</p>
+                <h3>Airport Expansion</h3>
+                <p>Our main hub now features a new international terminal.</p>
             </div>
             <div class="countdown">
-                <h3>Inaugural Flight Countdown</h3>
-                <div class="countdown-timer" id="countdown-timer">
+                <h3>Next Major Update</h3>
+                <div class="countdown-timer">
                     <div class="desktop-countdown">
                         <div class="time-unit">
                             <span id="days">00</span>
@@ -150,16 +113,8 @@
                         </div>
                     </div>
                     <div class="mobile-countdown">
-                        <svg width="200" height="200" viewBox="0 0 200 200">
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="565.48" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="days-circle"/>
-                            <circle cx="100" cy="100" r="70" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="439.82" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="hours-circle"/>
-                            <circle cx="100" cy="100" r="50" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="314.16" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="minutes-circle"/>
-                            <circle cx="100" cy="100" r="30" fill="none" stroke="#FFD700" stroke-width="8" stroke-dasharray="188.49" stroke-dashoffset="0" transform="rotate(-90 100 100)" id="seconds-circle"/>
-                            <rect x="70" y="40" width="60" height="120" fill="#003087" rx="10" opacity="0.8"/>
-                            <text id="mobile-days" x="100" y="70" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00d</text>
-                            <text id="mobile-hours" x="100" y="95" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00h</text>
-                            <text id="mobile-minutes" x="100" y="120" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00m</text>
-                            <text id="mobile-seconds" x="100" y="145" text-anchor="middle" fill="white" font-size="20" font-weight="bold">00s</text>
+                        <svg viewBox="0 0 200 50">
+                            <text x="50%" y="50%" text-anchor="middle" id="mobile-timer">00:00:00:00</text>
                         </svg>
                     </div>
                 </div>
@@ -167,182 +122,202 @@
         </div>
     </section>
 
+    <div class="play-community-wrapper">
+        <section id="play">
+            <h2>Play Now</h2>
+            <p>Join FlySphere on Roblox and start your aviation adventure today!</p>
+            <a href="https://www.roblox.com/games/123456789/FlySphere" target="_blank" class="cta-button">Play Now</a>
+        </section>
+
+        <section id="community">
+            <h2>Join Our Community</h2>
+            <p>Connect with fellow aviation enthusiasts in our Discord server!</p>
+            <a href="https://discord.gg/flysphere" target="_blank" class="community-button">Join Discord</a>
+        </section>
+    </div>
+
     <section id="testimonials">
-        <h2>What Players Say</h2>
+        <h2>What Our Players Say</h2>
         <div class="testimonial-grid">
             <div class="testimonial-item">
-                <p>"The most exceptional flight simulation experience available on Roblox!"</p>
-                <h4>- bre0zd</h4>
+                <p>"FlySphere is the best Roblox airline experience!"</p>
+                <p>- SkyCaptain123</p>
             </div>
             <div class="testimonial-item">
-                <p>"The passenger experience was fantastic!"</p>
-                <h4>- Anonymous</h4>
+                <p>"The attention to detail is incredible."</p>
+                <p>- AviatorFan</p>
+            </div>
+            <div class="testimonial-item">
+                <p>"I love the community events!"</p>
+                <p>- FlyGirl2000</p>
             </div>
         </div>
     </section>
 
-    <div class="play-community-wrapper">
-        <section id="play">
-            <h2>Start with FlySphere Now</h2>
-            <p>Book your spot in the skies and experience the adventure!</p>
-            <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Launch Game</a>
-        </section>
-        <section id="community">
-            <h2>Our Community</h2>
-            <p>Join our crew and stay updated on news and events.</p>
-            <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
-        </section>
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-image">
     </div>
 
     <footer>
         <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
     </footer>
 
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">×</span>
-        <img id="lightbox-img" class="lightbox-content" alt="Enlarged image">
-    </div>
-
     <script>
-        // Preloader
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            if (!sessionStorage.getItem('preloaderShown')) {
-                setTimeout(() => {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => {
-                        preloader.classList.add('hidden');
-                        sessionStorage.setItem('preloaderShown', 'true');
-                        animateHero();
-                    }, 500);
-                }, 1000);
-            } else {
-                preloader.classList.add('hidden');
-                animateHero();
-            }
-        });
-
-        // Hero animation
-        function animateHero() {
-            const heroTitle = document.querySelector('.hero h1');
-            const heroText = document.querySelector('.hero p');
-            const heroButton = document.querySelector('.hero .cta-button');
-            heroTitle.style.animation = 'fadeInDown 1.5s ease-in-out forwards';
-            heroText.style.animation = 'fadeInUp 1.5s ease-in-out 0.5s forwards';
-            heroButton.style.animation = 'fadeInUp 1.5s ease-in-out 0.7s forwards';
-        }
-
         // Disable right-click and source view
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('contextmenu', e => {
+            console.log('Right-click prevented');
+            e.preventDefault();
+        });
         document.addEventListener('keydown', e => {
             if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'i' || e.key === 'I') || e.key === 'F12') {
+                console.log('Source view prevented');
                 e.preventDefault();
             }
         });
 
         // Theme toggle
         document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark-mode');
-            document.documentElement.classList.toggle('light-mode');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+            console.log('Theme toggle clicked');
+            try {
+                document.documentElement.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('light-mode');
+                const theme = document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light';
+                localStorage.setItem('theme', theme);
+                console.log('Theme set to:', theme);
+            } catch (error) {
+                console.error('Error in theme toggle:', error);
+            }
         });
 
-        // Hamburger menu (mobile only)
+        // Hamburger menu
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
-        hamburger.addEventListener('click', () => {
-            if (window.innerWidth <= 768) {
-                navLinks.classList.toggle('active');
-                hamburger.classList.toggle('active');
-            }
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                console.log('Hamburger clicked');
+                try {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.toggle('active');
+                        hamburger.classList.toggle('active');
+                        console.log('Nav links toggled:', navLinks.classList.contains('active'));
+                    }
+                } catch (error) {
+                    console.error('Error in hamburger toggle:', error);
+                }
+            });
+
+            // Close menu on link click
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    console.log('Nav link clicked:', link.textContent);
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        hamburger.classList.remove('active');
+                        console.log('Menu closed after link click');
+                    }
+                });
+            });
+        } else {
+            console.error('Hamburger or nav-links not found');
+        }
+
+        // Smooth scroll for home link
+        document.querySelectorAll('a[href="#home"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Home link clicked');
+                const navHeight = document.querySelector('nav').offsetHeight;
+                const target = document.getElementById('home');
+                if (target) {
+                    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    console.log('Scrolled to home with offset:', offsetTop);
+                }
+            });
         });
 
         // Slideshow
         const slides = document.querySelectorAll('.slide');
         let currentSlide = 0;
-        function showNextSlide() {
-            slides[currentSlide].classList.remove('active');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
             currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
+            showSlide(currentSlide);
         }
-        setInterval(showNextSlide, 5000);
 
-        // Countdown
-        const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime();
-        const totalDays = Math.ceil((eventDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = eventDate - now;
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            const daysCircle = document.getElementById('days-circle');
-            const hoursCircle = document.getElementById('hours-circle');
-            const minutesCircle = document.getElementById('minutes-circle');
-            const secondsCircle = document.getElementById('seconds-circle');
-            const mobileDays = document.getElementById('mobile-days');
-            const mobileHours = document.getElementById('mobile-hours');
-            const mobileMinutes = document.getElementById('mobile-minutes');
-            const mobileSeconds = document.getElementById('mobile-seconds');
+        setInterval(nextSlide, 5000);
+        showSlide(currentSlide);
 
-            if (distance < 0) {
-                daysEl.textContent = '00';
-                hoursEl.textContent = '00';
-                minutesEl.textContent = '00';
-                secondsEl.textContent = '00';
-                mobileDays.textContent = '00d';
-                mobileHours.textContent = '00h';
-                mobileMinutes.textContent = '00m';
-                mobileSeconds.textContent = '00s';
-                daysCircle.style.strokeDashoffset = '565.48';
-                hoursCircle.style.strokeDashoffset = '439.82';
-                minutesCircle.style.strokeDashoffset = '314.16';
-                secondsCircle.style.strokeDashoffset = '188.49';
-                document.querySelector('.countdown h3').textContent = 'Flight Has Launched!';
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            daysEl.textContent = String(days).padStart(2, '0');
-            hoursEl.textContent = String(hours).padStart(2, '0');
-            minutesEl.textContent = String(minutes).padStart(2, '0');
-            secondsEl.textContent = String(seconds).padStart(2, '0');
-            mobileDays.textContent = `${String(days).padStart(2, '0')}d`;
-            mobileHours.textContent = `${String(hours).padStart(2, '0')}h`;
-            mobileMinutes.textContent = `${String(minutes).padStart(2, '0')}m`;
-            mobileSeconds.textContent = `${String(seconds).padStart(2, '0')}s`;
-
-            const daysOffset = 565.48 * (1 - days / totalDays);
-            const hoursOffset = 439.82 * (1 - hours / 24);
-            const minutesOffset = 314.16 * (1 - minutes / 60);
-            const secondsOffset = 188.49 * (1 - seconds / 60);
-            daysCircle.style.strokeDashoffset = daysOffset;
-            hoursCircle.style.strokeDashoffset = hoursOffset;
-            minutesCircle.style.strokeDashoffset = minutesOffset;
-            secondsCircle.style.strokeDashoffset = secondsOffset;
-        }
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+        // Hero animations
+        const heroElements = document.querySelectorAll('.hero h1, .hero p, .hero .cta-button');
+        heroElements.forEach((el, index) => {
+            setTimeout(() => {
+                el.style.animation = `fadeIn${index % 2 === 0 ? 'Down' : 'Up'} 1s ease forwards`;
+            }, index * 200);
+        });
 
         // Lightbox
+        const galleryImages = document.querySelectorAll('.gallery-image');
         const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxImage = document.getElementById('lightbox-image');
         const lightboxClose = document.querySelector('.lightbox-close');
-        document.querySelectorAll('.gallery-image').forEach(img => {
-            img.addEventListener('click', () => {
+
+        galleryImages.forEach(image => {
+            image.addEventListener('click', () => {
+                lightboxImage.src = image.src;
                 lightbox.style.display = 'flex';
-                lightboxImg.src = img.src;
+                document.body.style.overflow = 'hidden';
             });
         });
-        lightboxClose.addEventListener('click', () => lightbox.style.display = 'none');
-        lightbox.addEventListener('click', e => {
-            if (e.target === lightbox) lightbox.style.display = 'none';
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
         });
+
+        lightbox.addEventListener('click', e => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Countdown
+        function startCountdown() {
+            const countdownDate = new Date('2025-06-01T00:00:00').getTime();
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                document.getElementById('mobile-timer').textContent = `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.querySelector('.countdown-timer').textContent = 'Update Released!';
+                }
+            }, 1000);
+        }
+
+        startCountdown();
     </script>
 </body>
 </html>
