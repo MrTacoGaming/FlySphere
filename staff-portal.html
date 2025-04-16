@@ -12,9 +12,42 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="manifest" href="favicon/site.webmanifest">
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, deleteDoc, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXbjnQqzxIy1bbQ-lrleUUT1EnRzvNPPY",
+            authDomain: "flysphere-75c1c.firebaseapp.com",
+            projectId: "flysphere-75c1c",
+            storageBucket: "flysphere-75c1c.appspot.com",
+            messagingSenderId: "582235400495",
+            appId: "1:582235400495:web:5e28919ffeae4cf41e59da"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Export for global use
+        window.auth = auth;
+        window.db = db;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signOut = signOut;
+        window.doc = doc;
+        window.collection = collection;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.addDoc = addDoc;
+        window.onSnapshot = onSnapshot;
+        window.deleteDoc = deleteDoc;
+        window.orderBy = orderBy;
+    </script>
     <script>
         (function() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -123,21 +156,6 @@
     </footer>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCXbjnQqzxIy1bbQ-lrleUUT1EnRzvNPPY",
-            authDomain: "flysphere-75c1c.firebaseapp.com",
-            projectId: "flysphere-75c1c",
-            storageBucket: "flysphere-75c1c.firebasestorage.app",
-            messagingSenderId: "582235400495",
-            appId: "1:582235400495:web:5e28918ffeae4cf41e59da"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
         // Disable right-click and source view
         document.addEventListener('contextmenu', e => {
             console.log('Right-click prevented');
@@ -196,7 +214,7 @@
         }
 
         // Check auth state
-        auth.onAuthStateChanged(user => {
+        onAuthStateChanged(auth, async user => {
             console.log('Auth state changed:', user ? user.email : 'No user');
             try {
                 const loginSection = document.getElementById('login-section');
@@ -214,15 +232,18 @@
                     loginSection.style.display = 'none';
                     staffContent.style.display = 'block';
                     syncStatus.textContent = 'Syncing...';
-                    db.collection('users').doc(user.uid).get().then(doc => {
-                        if (doc.exists && doc.data().role === 'admin') {
-                            console.log('Admin user, showing controls');
-                            adminControls.style.display = 'block';
-                            adminOnlyElements.forEach(el => el.style.display = 'table-cell');
-                        }
-                        loadTables();
-                        syncStatus.textContent = 'Synced';
-                    });
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    const isAdmin = userDoc.exists() && userDoc.data().role === 'admin';
+                    if (isAdmin) {
+                        console.log('Admin user, showing controls');
+                        adminControls.style.display = 'block';
+                        adminOnlyElements.forEach(el => el.style.display = 'table-cell');
+                    } else {
+                        adminControls.style.display = 'none';
+                        adminOnlyElements.forEach(el => el.style.display = 'none');
+                    }
+                    loadTables();
+                    syncStatus.textContent = 'Synced';
                 } else {
                     loginSection.style.display = 'block';
                     staffContent.style.display = 'none';
@@ -257,7 +278,7 @@
                     return;
                 }
 
-                auth.signInWithEmailAndPassword(email, password)
+                signInWithEmailAndPassword(auth, email, password)
                     .then(() => {
                         console.log('Logged in:', email);
                         errorElement.style.display = 'none';
@@ -265,8 +286,16 @@
                         passwordInput.value = '';
                     })
                     .catch(error => {
-                        console.log('Login error:', error.message);
-                        errorElement.textContent = error.message;
+                        console.error('Login error:', error.code, error.message);
+                        let message = error.message;
+                        if (error.code === 'auth/wrong-password') {
+                            message = 'Incorrect password. Please try again.';
+                        } else if (error.code === 'auth/user-not-found') {
+                            message = 'No user found with this email.';
+                        } else if (error.code === 'auth/invalid-email') {
+                            message = 'Invalid email format.';
+                        }
+                        errorElement.textContent = message;
                         errorElement.style.display = 'block';
                         emailInput.value = '';
                         passwordInput.value = '';
@@ -298,10 +327,10 @@
                     return;
                 }
 
-                auth.createUserWithEmailAndPassword(email, password)
+                createUserWithEmailAndPassword(auth, email, password)
                     .then(userCredential => {
                         console.log('Signed up:', email);
-                        return db.collection('users').doc(userCredential.user.uid).set({
+                        return setDoc(doc(db, 'users', userCredential.user.uid), {
                             email: email,
                             role: 'staff' // Default role; admin must be set manually
                         });
@@ -312,8 +341,16 @@
                         passwordInput.value = '';
                     })
                     .catch(error => {
-                        console.log('Sign-up error:', error.message);
-                        errorElement.textContent = error.message;
+                        console.error('Sign-up error:', error.code, error.message);
+                        let message = error.message;
+                        if (error.code === 'auth/email-already-in-use') {
+                            message = 'This email is already registered.';
+                        } else if (error.code === 'auth/invalid-email') {
+                            message = 'Invalid email format.';
+                        } else if (error.code === 'auth/weak-password') {
+                            message = 'Password is too weak. Use at least 6 characters.';
+                        }
+                        errorElement.textContent = message;
                         errorElement.style.display = 'block';
                         emailInput.value = '';
                         passwordInput.value = '';
@@ -327,10 +364,12 @@
         function logout() {
             console.log('Logout clicked');
             try {
-                auth.signOut().then(() => {
+                signOut(auth).then(() => {
                     console.log('Logged out');
                     document.getElementById('email').value = '';
                     document.getElementById('password').value = '';
+                }).catch(error => {
+                    console.error('Logout error:', error);
                 });
             } catch (error) {
                 console.error('Error in logout:', error);
@@ -338,7 +377,7 @@
         }
 
         // Load tables with real-time listeners
-        function loadTables() {
+        async function loadTables() {
             console.log('Loading tables');
             try {
                 const scheduleTable = document.getElementById('schedule-table');
@@ -349,14 +388,17 @@
                     return;
                 }
 
+                const user = auth.currentUser;
+                const userDoc = user ? await getDoc(doc(db, 'users', user.uid)) : null;
+                const isAdmin = userDoc && userDoc.exists() && userDoc.data().role === 'admin';
+
                 // Real-time schedules
-                db.collection('schedules').orderBy('date').onSnapshot(snapshot => {
+                onSnapshot(collection(db, 'schedules'), orderBy('date'), snapshot => {
                     scheduleTable.innerHTML = '';
                     snapshot.forEach(doc => {
                         const schedule = doc.data();
                         const row = document.createElement('tr');
                         row.classList.add('fade-in');
-                        const isAdmin = auth.currentUser && db.collection('users').doc(auth.currentUser.uid).get().then(d => d.data().role === 'admin');
                         row.innerHTML = `
                             <td>${schedule.staff || ''}</td>
                             <td>${schedule.date || ''}</td>
@@ -372,13 +414,12 @@
                 });
 
                 // Real-time events
-                db.collection('events').orderBy('date').onSnapshot(snapshot => {
+                onSnapshot(collection(db, 'events'), orderBy('date'), snapshot => {
                     eventTable.innerHTML = '';
                     snapshot.forEach(doc => {
                         const event = doc.data();
                         const row = document.createElement('tr');
                         row.classList.add('fade-in');
-                        const isAdmin = auth.currentUser && db.collection('users').doc(auth.currentUser.uid).get().then(d => d.data().role === 'admin');
                         row.innerHTML = `
                             <td>${event.title || ''}</td>
                             <td>${event.date || ''}</td>
@@ -417,7 +458,7 @@
                 const task = taskInput.value.trim();
 
                 if (staff && date && time && task) {
-                    db.collection('schedules').add({
+                    addDoc(collection(db, 'schedules'), {
                         staff,
                         date,
                         time,
@@ -455,7 +496,7 @@
                 const location = locationInput.value.trim();
 
                 if (title && date && time && location) {
-                    db.collection('events').add({
+                    addDoc(collection(db, 'events'), {
                         title,
                         date,
                         time,
@@ -477,8 +518,8 @@
         function editSchedule(id) {
             console.log('Edit schedule:', id);
             try {
-                db.collection('schedules').doc(id).get().then(doc => {
-                    if (doc.exists) {
+                getDoc(doc(db, 'schedules', id)).then(doc => {
+                    if (doc.exists()) {
                         const schedule = doc.data();
                         const staffInput = document.getElementById('schedule-staff');
                         const dateInput = document.getElementById('schedule-date');
@@ -490,7 +531,7 @@
                             dateInput.value = schedule.date || '';
                             timeInput.value = schedule.time || '';
                             taskInput.value = schedule.task || '';
-                            db.collection('schedules').doc(id).delete();
+                            deleteDoc(doc(db, 'schedules', id));
                             console.log('Schedule prepared for edit:', id);
                         }
                     }
@@ -505,7 +546,7 @@
             console.log('Delete schedule:', id);
             try {
                 if (confirm('Are you sure you want to delete this schedule?')) {
-                    db.collection('schedules').doc(id).delete().then(() => {
+                    deleteDoc(doc(db, 'schedules', id)).then(() => {
                         console.log('Schedule deleted:', id);
                     });
                 }
@@ -518,8 +559,8 @@
         function editEvent(id) {
             console.log('Edit event:', id);
             try {
-                db.collection('events').doc(id).get().then(doc => {
-                    if (doc.exists) {
+                getDoc(doc(db, 'events', id)).then(doc => {
+                    if (doc.exists()) {
                         const event = doc.data();
                         const titleInput = document.getElementById('event-title');
                         const dateInput = document.getElementById('event-date');
@@ -531,7 +572,7 @@
                             dateInput.value = event.date || '';
                             timeInput.value = event.time || '';
                             locationInput.value = event.location || '';
-                            db.collection('events').doc(id).delete();
+                            deleteDoc(doc(db, 'events', id));
                             console.log('Event prepared for edit:', id);
                         }
                     }
@@ -546,7 +587,7 @@
             console.log('Delete event:', id);
             try {
                 if (confirm('Are you sure you want to delete this event?')) {
-                    db.collection('events').doc(id).delete().then(() => {
+                    deleteDoc(doc(db, 'events', id)).then(() => {
                         console.log('Event deleted:', id);
                     });
                 }
