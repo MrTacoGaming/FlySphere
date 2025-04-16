@@ -36,7 +36,7 @@ body {
 }
 
 #preloader.hidden {
-    display: none;
+    display: none !important;
 }
 
 html.light-mode #preloader {
@@ -91,7 +91,6 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
     background-color: #003087;
     padding: 10px 20px;
     position: sticky;
@@ -104,8 +103,7 @@ html.dark-mode nav {
 }
 
 .logo {
-    flex: 1;
-    text-align: center;
+    text-align: left;
 }
 
 .logo h1 {
@@ -693,18 +691,11 @@ html.dark-mode .admin-section {
         position: static;
         background: none;
         padding: 0;
+        justify-content: flex-end;
     }
 
     .nav-links li {
         margin: 0 15px;
-    }
-
-    nav {
-        flex-wrap: nowrap;
-    }
-
-    .logo {
-        order: 0;
     }
 
     .theme-toggle {

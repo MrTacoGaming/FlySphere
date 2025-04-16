@@ -31,13 +31,13 @@
     </div>
 
     <nav>
+        <div class="logo">
+            <h1>FlySphere</h1>
+        </div>
         <div class="hamburger">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
-        </div>
-        <div class="logo">
-            <h1>FlySphere</h1>
         </div>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
             <i class="fas fa-sun"></i>
@@ -126,22 +126,24 @@
 
     <script>
         // Preloader
-        window.addEventListener('load', () => {
+        function hidePreloader() {
             const preloader = document.getElementById('preloader');
             if (!sessionStorage.getItem('preloaderShown')) {
+                preloader.style.opacity = '0';
                 setTimeout(() => {
-                    preloader.style.opacity = '0';
-                    setTimeout(() => {
-                        preloader.style.display = 'none';
-                        sessionStorage.setItem('preloaderShown', 'true');
-                        checkSession();
-                    }, 500);
-                }, 1000);
+                    preloader.classList.add('hidden');
+                    sessionStorage.setItem('preloaderShown', 'true');
+                    checkSession();
+                }, 500);
             } else {
-                preloader.style.display = 'none';
+                preloader.classList.add('hidden');
                 checkSession();
             }
-        });
+        }
+
+        // Run preloader hide on load or after a short delay
+        window.addEventListener('load', hidePreloader);
+        setTimeout(hidePreloader, 2000); // Fallback to prevent infinite spinner
 
         // Disable right-click and source view
         document.addEventListener('contextmenu', e => e.preventDefault());
