@@ -167,7 +167,7 @@ header {
     text-align: center;
     color: white;
     overflow: hidden;
-    scroll-margin-top: 80px; /* Offset for sticky nav */
+    scroll-margin-top: 80px;
 }
 
 .hero-slideshow {
@@ -266,6 +266,7 @@ html.dark-mode .slide {
 /* Data Controls (Staff Portal) */
 .data-controls {
     display: flex;
+    align-items: center;
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
@@ -273,6 +274,15 @@ html.dark-mode .slide {
 
 .data-controls .small-cta {
     margin: 0;
+}
+
+#sync-status {
+    color: #333;
+    font-size: 14px;
+}
+
+html.dark-mode #sync-status {
+    color: #E0E0E0;
 }
 
 /* Sections */
