@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -178,7 +179,7 @@
         // Firebase Imports
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, deleteDoc, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+        import { getFirestore, collection, doc, setDoc, getDoc, addDoc, onSnapshot, deleteDoc, orderBy, serverTimestamp, where, query } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -318,7 +319,6 @@
 
                             console.log('Loading tables...');
                             loadTables(user.email, isAdmin);
-                            // Sync status updated in loadTables
                         } else {
                             console.log('No user, showing login section');
                             loginSection.style.display = 'block';
@@ -570,12 +570,13 @@
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in schedules snapshot:', error);
-                            syncStatus.textContent = 'Sync failed';
+                            syncStates.schedules = false;
+                            updateSyncStatus();
                         }
                     }, error => {
                         console.error('Schedules listener error:', error);
-                        syncStatus.textContent = 'Sync failed';
                         syncStates.schedules = false;
+                        updateSyncStatus();
                     });
 
                     // Real-time events
@@ -606,50 +607,53 @@
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in events snapshot:', error);
-                            syncStatus.textContent = 'Sync failed';
+                            syncStates.events = false;
+                            updateSyncStatus();
                         }
                     }, error => {
                         console.error('Events listener error:', error);
-                        syncStatus.textContent = 'Sync failed';
                         syncStates.events = false;
+                        updateSyncStatus();
                     });
 
                     // Real-time leaves
-                    onSnapshot(collection(db, 'leaves'), orderBy('startDate'), snapshot => {
+                    const leavesQuery = isAdmin
+                        ? query(collection(db, 'leaves'), orderBy('startDate'))
+                        : query(collection(db, 'leaves'), where('createdBy', '==', userEmail), orderBy('startDate'));
+                    onSnapshot(leavesQuery, snapshot => {
                         try {
                             leaveTable.innerHTML = '';
                             snapshot.forEach(doc => {
                                 const leave = doc.data();
-                                if (isAdmin || leave.createdBy === userEmail) {
-                                    const row = document.createElement('tr');
-                                    row.classList.add('fade-in');
-                                    row.innerHTML = `
-                                        <td>${leave.staff || ''}</td>
-                                        <td>${leave.startDate || ''}</td>
-                                        <td>${leave.endDate || ''}</td>
-                                        <td>${leave.reason || ''}</td>
-                                        <td>${leave.createdBy || ''}</td>
-                                        <td>${formatTimestamp(leave.createdAt)}</td>
-                                        <td>${leave.modifiedBy || ''}</td>
-                                        <td>${formatTimestamp(leave.modifiedAt)}</td>
-                                        <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                                            <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
-                                            <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
-                                        </td>
-                                    `;
-                                    leaveTable.appendChild(row);
-                                }
+                                const row = document.createElement('tr');
+                                row.classList.add('fade-in');
+                                row.innerHTML = `
+                                    <td>${leave.staff || ''}</td>
+                                    <td>${leave.startDate || ''}</td>
+                                    <td>${leave.endDate || ''}</td>
+                                    <td>${leave.reason || ''}</td>
+                                    <td>${leave.createdBy || ''}</td>
+                                    <td>${formatTimestamp(leave.createdAt)}</td>
+                                    <td>${leave.modifiedBy || ''}</td>
+                                    <td>${formatTimestamp(leave.modifiedAt)}</td>
+                                    <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                        <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
+                                        <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
+                                    </td>
+                                `;
+                                leaveTable.appendChild(row);
                             });
                             syncStates.leaves = true;
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in leaves snapshot:', error);
-                            syncStatus.textContent = 'Sync failed';
+                            syncStates.leaves = false;
+                            updateSyncStatus();
                         }
                     }, error => {
                         console.error('Leaves listener error:', error);
-                        syncStatus.textContent = 'Sync failed';
                         syncStates.leaves = false;
+                        updateSyncStatus();
                     });
                 } catch (error) {
                     console.error('Error in loadTables:', error);
@@ -1000,7 +1004,7 @@
             window.clearForm = function(type) {
                 console.log('Clearing form:', type);
                 try {
-                    const prefix = type === 'schedule' ? 'schedule-' : type === 'event' ? 'event-' : type === 'leave-' ? 'leave-' : 'request-leave-';
+                    const prefix = type === 'schedule' ? 'schedule-' : type === 'event' ? 'event-' : type === 'leave' ? 'leave-' : 'request-leave-';
                     const staffInput = document.getElementById(`${prefix}staff`);
                     const titleInput = document.getElementById(`${prefix}title`);
                     const dateInput = document.getElementById(`${prefix}date`);
@@ -1086,3 +1090,4 @@
     </script>
 </body>
 </html>
+```
