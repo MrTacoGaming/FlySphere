@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -504,7 +503,7 @@
 
             // Load tables with real-time listeners
             async function loadTables(userEmail, isAdmin) {
-                console.log('Loading tables');
+                console.log('Loading tables for:', userEmail, 'isAdmin:', isAdmin);
                 try {
                     const scheduleTable = document.getElementById('schedule-table');
                     const eventTable = document.getElementById('event-table');
@@ -543,7 +542,7 @@
                     }
 
                     // Real-time schedules
-                    onSnapshot(collection(db, 'schedules'), orderBy('date'), snapshot => {
+                    onSnapshot(query(collection(db, 'schedules'), orderBy('date')), snapshot => {
                         try {
                             scheduleTable.innerHTML = '';
                             snapshot.forEach(doc => {
@@ -567,6 +566,7 @@
                                 scheduleTable.appendChild(row);
                             });
                             syncStates.schedules = true;
+                            console.log('Schedules synced');
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in schedules snapshot:', error);
@@ -580,7 +580,7 @@
                     });
 
                     // Real-time events
-                    onSnapshot(collection(db, 'events'), orderBy('date'), snapshot => {
+                    onSnapshot(query(collection(db, 'events'), orderBy('date')), snapshot => {
                         try {
                             eventTable.innerHTML = '';
                             snapshot.forEach(doc => {
@@ -604,6 +604,7 @@
                                 eventTable.appendChild(row);
                             });
                             syncStates.events = true;
+                            console.log('Events synced');
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in events snapshot:', error);
@@ -620,30 +621,36 @@
                     const leavesQuery = isAdmin
                         ? query(collection(db, 'leaves'), orderBy('startDate'))
                         : query(collection(db, 'leaves'), where('createdBy', '==', userEmail), orderBy('startDate'));
+                    console.log('Leaves query initialized for:', isAdmin ? 'admin' : `staff (${userEmail})`);
                     onSnapshot(leavesQuery, snapshot => {
                         try {
                             leaveTable.innerHTML = '';
-                            snapshot.forEach(doc => {
-                                const leave = doc.data();
-                                const row = document.createElement('tr');
-                                row.classList.add('fade-in');
-                                row.innerHTML = `
-                                    <td>${leave.staff || ''}</td>
-                                    <td>${leave.startDate || ''}</td>
-                                    <td>${leave.endDate || ''}</td>
-                                    <td>${leave.reason || ''}</td>
-                                    <td>${leave.createdBy || ''}</td>
-                                    <td>${formatTimestamp(leave.createdAt)}</td>
-                                    <td>${leave.modifiedBy || ''}</td>
-                                    <td>${formatTimestamp(leave.modifiedAt)}</td>
-                                    <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
-                                        <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
-                                        <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
-                                    </td>
-                                `;
-                                leaveTable.appendChild(row);
-                            });
+                            if (snapshot.empty && !isAdmin) {
+                                console.log('No leaves found for staff:', userEmail);
+                            } else {
+                                snapshot.forEach(doc => {
+                                    const leave = doc.data();
+                                    const row = document.createElement('tr');
+                                    row.classList.add('fade-in');
+                                    row.innerHTML = `
+                                        <td>${leave.staff || ''}</td>
+                                        <td>${leave.startDate || ''}</td>
+                                        <td>${leave.endDate || ''}</td>
+                                        <td>${leave.reason || ''}</td>
+                                        <td>${leave.createdBy || ''}</td>
+                                        <td>${formatTimestamp(leave.createdAt)}</td>
+                                        <td>${leave.modifiedBy || ''}</td>
+                                        <td>${formatTimestamp(leave.modifiedAt)}</td>
+                                        <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'};">
+                                            <button class="small-cta" onclick="editLeave('${doc.id}')">Edit</button>
+                                            <button class="small-cta" onclick="deleteLeave('${doc.id}')">Delete</button>
+                                        </td>
+                                    `;
+                                    leaveTable.appendChild(row);
+                                });
+                            }
                             syncStates.leaves = true;
+                            console.log('Leaves synced');
                             updateSyncStatus();
                         } catch (error) {
                             console.error('Error in leaves snapshot:', error);
@@ -845,9 +852,14 @@
             window.editSchedule = function(id) {
                 console.log('Edit schedule:', id);
                 try {
-                    getDoc(doc(db, 'schedules', id)).then(doc => {
-                        if (doc.exists()) {
-                            const schedule = doc.data();
+                    if (typeof doc !== 'function') {
+                        console.error('Firestore doc function is undefined');
+                        alert('Editing is unavailable due to a system error. Please try again later.');
+                        return;
+                    }
+                    getDoc(doc(db, 'schedules', id)).then(docSnap => {
+                        if (docSnap.exists()) {
+                            const schedule = docSnap.data();
                             const staffInput = document.getElementById('schedule-staff');
                             const dateInput = document.getElementById('schedule-date');
                             const timeInput = document.getElementById('schedule-time');
@@ -864,7 +876,13 @@
                                     console.error('Error deleting schedule for edit:', error);
                                     alert('Failed to edit schedule. Please try again.');
                                 });
+                            } else {
+                                console.error('Schedule form elements not found');
+                                alert('Failed to edit schedule. Please try again.');
                             }
+                        } else {
+                            console.error('Schedule not found:', id);
+                            alert('Schedule not found.');
                         }
                     }).catch(error => {
                         console.error('Error fetching schedule:', error);
@@ -898,9 +916,14 @@
             window.editEvent = function(id) {
                 console.log('Edit event:', id);
                 try {
-                    getDoc(doc(db, 'events', id)).then(doc => {
-                        if (doc.exists()) {
-                            const event = doc.data();
+                    if (typeof doc !== 'function') {
+                        console.error('Firestore doc function is undefined');
+                        alert('Editing is unavailable due to a system error. Please try again later.');
+                        return;
+                    }
+                    getDoc(doc(db, 'events', id)).then(docSnap => {
+                        if (docSnap.exists()) {
+                            const event = docSnap.data();
                             const titleInput = document.getElementById('event-title');
                             const dateInput = document.getElementById('event-date');
                             const timeInput = document.getElementById('event-time');
@@ -917,7 +940,13 @@
                                     console.error('Error deleting event for edit:', error);
                                     alert('Failed to edit event. Please try again.');
                                 });
+                            } else {
+                                console.error('Event form elements not found');
+                                alert('Failed to edit event. Please try again.');
                             }
+                        } else {
+                            console.error('Event not found:', id);
+                            alert('Event not found.');
                         }
                     }).catch(error => {
                         console.error('Error fetching event:', error);
@@ -951,9 +980,14 @@
             window.editLeave = function(id) {
                 console.log('Edit leave:', id);
                 try {
-                    getDoc(doc(db, 'leaves', id)).then(doc => {
-                        if (doc.exists()) {
-                            const leave = doc.data();
+                    if (typeof doc !== 'function') {
+                        console.error('Firestore doc function is undefined');
+                        alert('Editing is unavailable due to a system error. Please try again later.');
+                        return;
+                    }
+                    getDoc(doc(db, 'leaves', id)).then(docSnap => {
+                        if (docSnap.exists()) {
+                            const leave = docSnap.data();
                             const staffInput = document.getElementById('leave-staff');
                             const startDateInput = document.getElementById('leave-start-date');
                             const endDateInput = document.getElementById('leave-end-date');
@@ -970,7 +1004,13 @@
                                     console.error('Error deleting leave for edit:', error);
                                     alert('Failed to edit leave. Please try again.');
                                 });
+                            } else {
+                                console.error('Leave form elements not found');
+                                alert('Failed to edit leave. Please try again.');
                             }
+                        } else {
+                            console.error('Leave not found:', id);
+                            alert('Leave not found.');
                         }
                     }).catch(error => {
                         console.error('Error fetching leave:', error);
@@ -1090,4 +1130,3 @@
     </script>
 </body>
 </html>
-```
