@@ -168,10 +168,12 @@
             { username: 'staff1', password: 'staff123', role: 'staff' }
         ];
 
-        // Check session on load
+        // Check session and data on load
         window.addEventListener('load', () => {
-            console.log('Page loaded, checking session');
+            console.log('Page loaded, checking session and data');
             checkSession();
+            console.log('Schedules:', localStorage.getItem('schedules'));
+            console.log('Events:', localStorage.getItem('events'));
         });
 
         // Session management
@@ -281,6 +283,8 @@
                 if (usernameInput) usernameInput.value = '';
                 if (passwordInput) passwordInput.value = '';
                 checkSession();
+                console.log('Schedules after logout:', localStorage.getItem('schedules'));
+                console.log('Events after logout:', localStorage.getItem('events'));
             } catch (error) {
                 console.error('Error in logout:', error);
             }
@@ -367,6 +371,7 @@
                     const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
                     schedules.push({ staff, date, time, task });
                     localStorage.setItem('schedules', JSON.stringify(schedules));
+                    console.log('Schedule added:', { staff, date, time, task });
                     loadTables();
                     clearForm('schedule');
                 } else {
@@ -401,6 +406,7 @@
                     const events = JSON.parse(localStorage.getItem('events') || '[]');
                     events.push({ title, date, time, location });
                     localStorage.setItem('events', JSON.stringify(events));
+                    console.log('Event added:', { title, date, time, location });
                     loadTables();
                     clearForm('event');
                 } else {
@@ -431,6 +437,7 @@
                         taskInput.value = schedule.task || '';
                         schedules.splice(index, 1);
                         localStorage.setItem('schedules', JSON.stringify(schedules));
+                        console.log('Schedule edited, index:', index);
                         loadTables();
                     } else {
                         console.error('Schedule form elements not found');
@@ -449,6 +456,7 @@
                     const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
                     schedules.splice(index, 1);
                     localStorage.setItem('schedules', JSON.stringify(schedules));
+                    console.log('Schedule deleted, index:', index);
                     loadTables();
                 }
             } catch (error) {
@@ -475,6 +483,7 @@
                         locationInput.value = event.location || '';
                         events.splice(index, 1);
                         localStorage.setItem('events', JSON.stringify(events));
+                        console.log('Event edited, index:', index);
                         loadTables();
                     } else {
                         console.error('Event form elements not found');
@@ -493,6 +502,7 @@
                     const events = JSON.parse(localStorage.getItem('events') || '[]');
                     events.splice(index, 1);
                     localStorage.setItem('events', JSON.stringify(events));
+                    console.log('Event deleted, index:', index);
                     loadTables();
                 }
             } catch (error) {
