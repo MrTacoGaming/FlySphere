@@ -204,22 +204,33 @@
     </div>
 
     <script>
-        // Preloader and hero animation
+        // Preloader
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
+            if (!sessionStorage.getItem('preloaderShown')) {
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        sessionStorage.setItem('preloaderShown', 'true');
+                        animateHero();
+                    }, 500);
+                }, 1000);
+            } else {
+                preloader.style.display = 'none';
+                animateHero();
+            }
+        });
+
+        // Hero animation
+        function animateHero() {
             const heroTitle = document.querySelector('.hero h1');
             const heroText = document.querySelector('.hero p');
             const heroButton = document.querySelector('.hero .cta-button');
-            setTimeout(() => {
-                preloader.style.opacity = '0';
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                    heroTitle.style.animation = 'fadeInDown 1.5s ease-in-out forwards';
-                    heroText.style.animation = 'fadeInUp 1.5s ease-in-out 0.5s forwards';
-                    heroButton.style.animation = 'fadeInUp 1.5s ease-in-out 0.7s forwards';
-                }, 500);
-            }, 1000);
-        });
+            heroTitle.style.animation = 'fadeInDown 1.5s ease-in-out forwards';
+            heroText.style.animation = 'fadeInUp 1.5s ease-in-out 0.5s forwards';
+            heroButton.style.animation = 'fadeInUp 1.5s ease-in-out 0.7s forwards';
+        }
 
         // Disable right-click and source view
         document.addEventListener('contextmenu', e => e.preventDefault());
@@ -236,12 +247,14 @@
             localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
         });
 
-        // Hamburger menu
+        // Hamburger menu (mobile only)
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
         hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
+            if (window.innerWidth <= 768) {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            }
         });
 
         // Slideshow

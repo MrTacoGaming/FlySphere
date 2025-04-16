@@ -128,13 +128,19 @@
         // Preloader
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                preloader.style.opacity = '0';
+            if (!sessionStorage.getItem('preloaderShown')) {
                 setTimeout(() => {
-                    preloader.style.display = 'none';
-                    checkSession();
-                }, 500);
-            }, 1000);
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        sessionStorage.setItem('preloaderShown', 'true');
+                        checkSession();
+                    }, 500);
+                }, 1000);
+            } else {
+                preloader.style.display = 'none';
+                checkSession();
+            }
         });
 
         // Disable right-click and source view
@@ -152,12 +158,14 @@
             localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
         });
 
-        // Hamburger menu
+        // Hamburger menu (mobile only)
         const hamburger = document.querySelector('.hamburger');
         const navLinks = document.querySelector('.nav-links');
         hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
+            if (window.innerWidth <= 768) {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            }
         });
 
         // Mock user database (not secure)
