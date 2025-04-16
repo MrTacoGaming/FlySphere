@@ -3,20 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlySphere - Your UK Airline</title>
+    <title>FlySphere - Your UK Airline</title> 
+
+    <!-- stylesheets
+    ================================================== -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="favicon/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- favicons
+    ================================================== -->
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
     <link rel="manifest" href="favicon/site.webmanifest">
+
+    <!-- dark mode detection
+    ================================================== -->
     <script>
         (function() {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const savedTheme = localStorage.getItem('theme');
-            document.documentElement.classList.add(savedTheme || (prefersDark ? 'dark' : 'light') + '-mode');
+            const initialTheme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+            document.documentElement.classList.add(initialTheme + '-mode');
         })();
     </script>
 </head>
@@ -31,17 +41,9 @@
     </div>
 
     <nav>
-        <div class="hamburger">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
         <div class="logo">
             <h1>FlySphere</h1>
         </div>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-            <i class="fas fa-sun"></i>
-        </button>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -51,6 +53,9 @@
             <li><a href="#community">Community</a></li>
             <li><a href="staff-portal.html">Staff Portal</a></li>
         </ul>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <i class="fas fa-sun"></i>
+        </button>
     </nav>
 
     <header id="home">
@@ -69,7 +74,10 @@
 
     <section id="about">
         <h2>About FlySphere</h2>
-        <p>FlySphere brings the world of aviation to Roblox. Check out our lounge, explore detailed airports, and enjoy flight experiences as a passenger – or maybe treat yourself to a first-class flight?</p>
+        <p>
+            FlySphere brings the world of aviation to Roblox. Check out our lounge, explore detailed airports, 
+            and enjoy flight experiences as a passenger – or maybe treat yourself to a first-class flight?
+        </p>
         <p><a href="#play" class="cta-button">Start Your Adventure</a></p>
     </section>
 
@@ -187,12 +195,47 @@
             <p>Book your spot in the skies and experience the adventure!</p>
             <a href="https://www.roblox.com/games/116183021304793/Dresden-Airport" target="_blank" class="cta-button">Launch Game</a>
         </section>
+
         <section id="community">
             <h2>Our Community</h2>
             <p>Join our crew and stay updated on news and events.</p>
             <a href="https://discord.com/invite/r5pSFMPS9n" target="_blank" class="community-button">Join Discord</a>
+            <!-- Commented out leaderboard
+            <div class="leaderboard">
+                <h3>Top Pilots</h3>
+                <div class="leaderboard-grid">
+                    <div class="leaderboard-item top-pilot">
+                        <span class="rank">1</span>
+                        <span class="name">FlyMaster</span>
+                        <span class="flights">500 Flights</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">2</span>
+                        <span class="name">WingKing</span>
+                        <span class="flights">450 Flights</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">3</span>
+                        <span class="name">SkyAce</span>
+                        <span class="flights">400 Flights</span>
+                    </div>
+                </div>
+            </div>
+            -->
         </section>
     </div>
+
+    <!-- Commented out contact section
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <form action="https://formspree.io/f/your-form-id" method="POST">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+            <button type="submit" class="cta-button">Send</button>
+        </form>
+    </section>
+    -->
 
     <footer>
         <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
@@ -204,12 +247,34 @@
     </div>
 
     <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const preloader = document.getElementById('preloader');
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.createElement('div');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const daysCircle = document.getElementById('days-circle');
+        const hoursCircle = document.getElementById('hours-circle');
+        const minutesCircle = document.getElementById('minutes-circle');
+        const secondsCircle = document.getElementById('seconds-circle');
+        const mobileDays = document.getElementById('mobile-days');
+        const mobileHours = document.getElementById('mobile-hours');
+        const mobileMinutes = document.getElementById('mobile-minutes');
+        const mobileSeconds = document.getElementById('mobile-seconds');
+        const heroTitle = document.querySelector('.hero h1');
+        const heroText = document.querySelector('.hero p');
+        const heroButton = document.querySelector('.hero .cta-button');
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.querySelector('.lightbox-close');
+        const galleryImages = document.querySelectorAll('.gallery-image');
+
         // Preloader and hero animation
         window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            const heroTitle = document.querySelector('.hero h1');
-            const heroText = document.querySelector('.hero p');
-            const heroButton = document.querySelector('.hero .cta-button');
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 setTimeout(() => {
@@ -221,32 +286,7 @@
             }, 1000);
         });
 
-        // Disable right-click and source view
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'i' || e.key === 'I') || e.key === 'F12') {
-                e.preventDefault();
-            }
-        });
-
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark-mode');
-            document.documentElement.classList.toggle('light-mode');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
-        });
-
-        // Hamburger menu
-        const hamburger = document.querySelector('.hamburger');
-        const navLinks = document.querySelector('.nav-links');
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
-
         // Slideshow
-        const slides = document.querySelectorAll('.slide');
-        let currentSlide = 0;
         function showNextSlide() {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
@@ -254,24 +294,43 @@
         }
         setInterval(showNextSlide, 5000);
 
+        // Hamburger setup
+        hamburger.classList.add('hamburger');
+        hamburger.innerHTML = `
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        `;
+        document.querySelector('nav').appendChild(hamburger);
+
+        // Dark mode listener and manual toggle
+        function updateTheme() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            if (!savedTheme) {
+                document.documentElement.classList.toggle('dark-mode', prefersDark);
+                document.documentElement.classList.toggle('light-mode', !prefersDark);
+            }
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+        toggleButton.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+
+        // Hamburger toggle
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+
         // Countdown
         const eventDate = new Date('April 5, 2025 16:00:00 GMT+0100').getTime();
         const totalDays = Math.ceil((eventDate - new Date().getTime()) / (1000 * 60 * 60 * 24));
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = eventDate - now;
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            const daysCircle = document.getElementById('days-circle');
-            const hoursCircle = document.getElementById('hours-circle');
-            const minutesCircle = document.getElementById('minutes-circle');
-            const secondsCircle = document.getElementById('seconds-circle');
-            const mobileDays = document.getElementById('mobile-days');
-            const mobileHours = document.getElementById('mobile-hours');
-            const mobileMinutes = document.getElementById('mobile-minutes');
-            const mobileSeconds = document.getElementById('mobile-seconds');
 
             if (distance < 0) {
                 daysEl.textContent = '00';
@@ -299,6 +358,7 @@
             hoursEl.textContent = String(hours).padStart(2, '0');
             minutesEl.textContent = String(minutes).padStart(2, '0');
             secondsEl.textContent = String(seconds).padStart(2, '0');
+
             mobileDays.textContent = `${String(days).padStart(2, '0')}d`;
             mobileHours.textContent = `${String(hours).padStart(2, '0')}h`;
             mobileMinutes.textContent = `${String(minutes).padStart(2, '0')}m`;
@@ -316,20 +376,49 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
+       
         // Lightbox
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxClose = document.querySelector('.lightbox-close');
-        document.querySelectorAll('.gallery-image').forEach(img => {
+        galleryImages.forEach(img => {
             img.addEventListener('click', () => {
                 lightbox.style.display = 'flex';
                 lightboxImg.src = img.src;
             });
         });
-        lightboxClose.addEventListener('click', () => lightbox.style.display = 'none');
-        lightbox.addEventListener('click', e => {
-            if (e.target === lightbox) lightbox.style.display = 'none';
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.style.display = 'none';
         });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+            }
+        });
+
+        // Contact form handling (commented out)
+        /*
+        const contactForm = document.querySelector('#contact form');
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(contactForm);
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    contactForm.reset();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (error) {
+                alert('Oops! Something went wrong. Please try again.');
+                console.error(error);
+            }
+        });
+        */
     </script>
 </body>
 </html>

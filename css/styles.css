@@ -1,4 +1,4 @@
-/* Apply theme to the root element for broader scope */
+/* Root and Theme */
 html {
     transition: background-color 0.3s, color 0.3s;
 }
@@ -18,7 +18,7 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.6;
-    cursor: url('plane-cursor.png'), auto; /* Optional: add plane-cursor.png */
+    cursor: url('plane-cursor.png'), auto;
 }
 
 /* Preloader */
@@ -85,10 +85,11 @@ html.dark-mode #preloader {
 /* Navigation */
 nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
     background-color: #003087;
-    padding: 15px 20px;
+    padding: 10px 20px;
     position: sticky;
     top: 0;
     z-index: 101;
@@ -98,37 +99,46 @@ html.dark-mode nav {
     background-color: #0F0F1A;
 }
 
+.logo {
+    flex: 1;
+    text-align: center;
+    order: 2;
+}
+
 .logo h1 {
     color: white;
     margin: 0;
     font-size: 24px;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
+.hamburger {
+    display: block;
+    order: 1;
+    cursor: pointer;
 }
 
-.nav-links li {
-    margin-left: 20px;
+.hamburger .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px 0;
+    transition: 0.3s;
 }
 
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s, transform 0.3s;
+.hamburger.active .bar:nth-child(2) {
+    opacity: 0;
 }
 
-.nav-links a:hover {
-    color: #FFD700;
-    transform: scale(1.05);
+.hamburger.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
 }
 
-/* Theme Toggle */
+.hamburger.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
 .theme-toggle {
+    order: 3;
     background: none;
     border: none;
     cursor: pointer;
@@ -147,9 +157,46 @@ html.dark-mode .theme-toggle .fa-sun {
 }
 
 html.dark-mode .theme-toggle::after {
-    content: '\f186'; /* Moon icon */
+    content: '\f186';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
+}
+
+.nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+    background-color: #003087;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 10px 0;
+    z-index: 100;
+}
+
+html.dark-mode .nav-links {
+    background-color: #0F0F1A;
+}
+
+.nav-links.active {
+    display: flex;
+}
+
+.nav-links li {
+    margin: 10px 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.nav-links a:hover {
+    color: #FFD700;
+    transform: scale(1.05);
 }
 
 /* Hero Section */
@@ -185,7 +232,7 @@ header {
 }
 
 html.dark-mode .slide {
-    filter: brightness(50%); /* Dim images in dark mode */
+    filter: brightness(50%);
 }
 
 .slide.active {
@@ -287,7 +334,7 @@ html.dark-mode h2 {
 
 .gallery-image {
     width: 100%;
-    max-width: 200px; /* Limit size for consistency */
+    max-width: 200px;
     height: auto;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -413,20 +460,10 @@ html.dark-mode .countdown-timer {
     max-width: 100%;
 }
 
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
-.on-time { color: #28A745; }
-.delayed { color: #DC3545; }
-.boarding { color: #FFC107; }
-.departed { color: #17A2B8; }
-.arrived { color: #6F42C1; }
 
 /* Testimonials */
 .testimonial-grid {
@@ -447,7 +484,7 @@ html.dark-mode .testimonial-item {
     background-color: #2D2D44;
 }
 
-/* Play and Community Wrapper */
+/* Play and Community */
 .play-community-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -462,7 +499,6 @@ html.dark-mode .testimonial-item {
     min-width: 300px;
 }
 
-/* Community */
 .community-button {
     display: inline-block;
     padding: 15px 40px;
@@ -525,14 +561,14 @@ footer p {
 }
 
 footer a.footer-links {
-    color: white !important;
+    color: white;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s, transform 0.3s;
 }
 
 footer a.footer-links:hover {
-    color: #FFD700 !important;
+    color: #FFD700;
     transform: scale(1.05);
 }
 
@@ -542,17 +578,106 @@ a:focus, button:focus {
     outline-offset: 2px;
 }
 
-/* Hamburger Menu */
-.hamburger {
-    display: none;
+/* Staff Portal */
+.login-container {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-.hamburger .bar {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-    margin: 5px 0;
-    transition: 0.3s;
+html.dark-mode .login-container {
+    background-color: #2D2D44;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.login-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.login-form input:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+.admin-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f3f3f3;
+    border-radius: 10px;
+}
+
+html.dark-mode .admin-section {
+    background-color: #2D2D44;
+}
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+   -growing: nowrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    flex: 1;
+    min-width: 120px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.styled-table th {
+    background-color: #003087;
+    color: #fff;
+}
+
+.styled-table tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.styled-table tr {
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.styled-table tr.fade-in {
+    animation: fadeIn 0.5s ease-in;
 }
 
 /* Mobile Design */
@@ -562,7 +687,6 @@ a:focus, button:focus {
     }
 
     nav {
-        flex-wrap: wrap;
         padding: 10px;
     }
 
@@ -571,51 +695,7 @@ a:focus, button:focus {
     }
 
     .nav-links {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        text-align: center;
-        background-color: #003087;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        padding: 10px 0;
-    }
-
-    html.dark-mode .nav-links {
-        background-color: #0F0F1A;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .nav-links li {
-        margin: 10px 0;
-    }
-
-    .theme-toggle {
-        position: absolute;
-        right: 50px;
-        top: 15px;
-    }
-
-    .hamburger {
-        display: block;
-        cursor: pointer;
-        padding: 5px;
-    }
-
-    .hamburger.active .bar:nth-child(2) {
-        opacity: 0;
-    }
-
-    .hamburger.active .bar:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-    }
-
-    .hamburger.active .bar:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
+        top: 50px;
     }
 
     .hero h1 {
@@ -640,7 +720,7 @@ a:focus, button:focus {
     }
 
     .gallery-image {
-        max-width: 150px; /* Smaller on mobile */
+        max-width: 150px;
     }
 
     .stats-grid {
@@ -671,31 +751,4 @@ a:focus, button:focus {
     section {
         padding: 20px;
     }
-}
-
-/* Styled Table */
-.styled-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 18px;
-    text-align: left;
-}
-
-.styled-table th, .styled-table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-}
-
-.styled-table th {
-    background-color: #003087;
-    color: #fff;
-}
-
-.styled-table tr:nth-child(even) {
-    background-color: #f3f3f3;
-}
-
-.styled-table tr:hover {
-    background-color: #f1f1f1;
 }

@@ -1,134 +1,346 @@
-/* Navigation Updates for Hamburger and Centered Logo */
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 10px 20px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlySphere - Staff Portal</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="favicon/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <script>
+        (function() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            document.documentElement.classList.add(savedTheme || (prefersDark ? 'dark' : 'light') + '-mode');
+        })();
+    </script>
+</head>
+<body>
+    <div id="preloader">
+        <div class="propeller">
+            <div class="blade"></div>
+            <div class="blade"></div>
+            <div class="blade"></div>
+            <div class="blade"></div>
+        </div>
+    </div>
 
-.logo {
-    flex: 1;
-    text-align: center;
-    order: 2;
-}
+    <nav>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="logo">
+            <h1>FlySphere</h1>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            <i class="fas fa-sun"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#updates">Updates</a></li>
+            <li><a href="index.html#play">Play</a></li>
+            <li><a href="index.html#community">Community</a></li>
+            <li><a href="#">Staff Portal</a></li>
+        </ul>
+    </nav>
 
-.hamburger {
-    display: block;
-    order: 1;
-    cursor: pointer;
-}
+    <section id="staff-portal">
+        <h2>Staff Portal</h2>
+        <div id="login-section">
+            <div class="login-container">
+                <h3>Staff Login</h3>
+                <div class="login-form">
+                    <input type="text" id="username" placeholder="Username" required aria-label="Username">
+                    <input type="password" id="password" placeholder="Password" required aria-label="Password">
+                    <button class="cta-button" onclick="login()">Login</button>
+                </div>
+                <p id="login-error" style="color: #DC3545; display: none;" aria-live="polite">Invalid credentials. Please try again.</p>
+            </div>
+        </div>
+        <div id="staff-content" style="display: none;">
+            <button class="small-cta" onclick="logout()">Logout</button>
+            <div id="admin-controls" style="display: none;">
+                <h3>Admin Controls</h3>
+                <div class="admin-section">
+                    <h4>Manage Schedules</h4>
+                    <div class="form-group">
+                        <input type="text" id="schedule-staff" placeholder="Staff Name" required aria-label="Staff Name">
+                        <input type="date" id="schedule-date" required aria-label="Schedule Date">
+                        <input type="time" id="schedule-time" required aria-label="Schedule Time">
+                        <input type="text" id="schedule-task" placeholder="Task" required aria-label="Task">
+                        <button class="small-cta" onclick="addSchedule()">Add Schedule</button>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h4>Manage Events</h4>
+                    <div class="form-group">
+                        <input type="text" id="event-title" placeholder="Event Title" required aria-label="Event Title">
+                        <input type="date" id="event-date" required aria-label="Event Date">
+                        <input type="time" id="event-time" required aria-label="Event Time">
+                        <input type="text" id="event-location" placeholder="Location" required aria-label="Location">
+                        <button class="small-cta" onclick="addEvent()">Add Event</button>
+                    </div>
+                </div>
+            </div>
+            <h3>Schedules</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Staff Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Task</th>
+                        <th class="admin-only" style="display: none;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-table"></tbody>
+            </table>
+            <h3>Upcoming Events</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Location</th>
+                        <th class="admin-only" style="display: none;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="event-table"></tbody>
+            </table>
+        </div>
+    </section>
 
-.theme-toggle {
-    order: 3;
-}
+    <footer>
+        <p>© 2025 <a href="https://www.roblox.com/groups/34437147/FlySphere#!/about" target="_blank" class="footer-links">FlySphere</a> <a href="https://www.roblox.com/users/5428730337/profile" target="_blank" class="footer-links">[MrTacoGaming76]</a> - Your Virtual Airline on Roblox</p>
+    </footer>
 
-.nav-links {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    text-align: center;
-    background-color: #003087;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    padding: 10px 0;
-    z-index: 100;
-}
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    checkSession();
+                }, 500);
+            }, 1000);
+        });
 
-html.dark-mode .nav-links {
-    background-color: #0F0F1A;
-}
+        // Disable right-click and source view
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'i' || e.key === 'I') || e.key === 'F12') {
+                e.preventDefault();
+            }
+        });
 
-.nav-links.active {
-    display: flex;
-}
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+            document.documentElement.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
 
-.nav-links li {
-    margin: 10px 0;
-}
+        // Hamburger menu
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
 
-/* Staff Portal Styles */
-.login-container {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+        // Mock user database (not secure)
+        const users = [
+            { username: 'admin', password: 'admin123', role: 'admin' },
+            { username: 'staff1', password: 'staff123', role: 'staff' }
+        ];
 
-html.dark-mode .login-container {
-    background-color: #2D2D44;
-}
+        // Session management
+        function checkSession() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const loginSection = document.getElementById('login-section');
+            const staffContent = document.getElementById('staff-content');
+            const adminControls = document.getElementById('admin-controls');
+            const adminOnly = document.querySelectorAll('.admin-only');
+            if (user) {
+                loginSection.style.display = 'none';
+                staffContent.style.display = 'block';
+                if (user.role === 'admin') {
+                    adminControls.style.display = 'block';
+                    adminOnly.forEach(el => el.style.display = 'table-cell');
+                }
+                loadTables();
+            } else {
+                loginSection.style.display = 'block';
+                staffContent.style.display = 'none';
+            }
+        }
 
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        // Login
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const user = users.find(u => u.username === username && u.password === password);
+            const error = document.getElementById('login-error');
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                error.style.display = 'none';
+                checkSession();
+            } else {
+                error.style.display = 'block';
+            }
+        }
 
-.login-form input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
+        // Logout
+        function logout() {
+            localStorage.removeItem('currentUser');
+            checkSession();
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
 
-.login-form input:focus {
-    border-color: #FFD700;
-    outline: none;
-}
+        // Load tables
+        function loadTables() {
+            const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+            const scheduleTable = document.getElementById('schedule-table');
+            scheduleTable.innerHTML = '';
+            schedules.forEach((schedule, index) => {
+                const row = document.createElement('tr');
+                row.classList.add('fade-in');
+                row.innerHTML = `
+                    <td>${schedule.staff}</td>
+                    <td>${schedule.date}</td>
+                    <td>${schedule.time}</td>
+                    <td>${schedule.task}</td>
+                    <td class="admin-only" style="display: ${JSON.parse(localStorage.getItem('currentUser')).role === 'admin' ? 'table-cell' : 'none'};">
+                        <button class="small-cta" onclick="editSchedule(${index})">Edit</button>
+                        <button class="small-cta" onclick="deleteSchedule(${index})">Delete</button>
+                    </td>
+                `;
+                scheduleTable.appendChild(row);
+            });
 
-.admin-section {
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #f3f3f3;
-    border-radius: 10px;
-}
+            const events = JSON.parse(localStorage.getItem('events')) || [];
+            const eventTable = document.getElementById('event-table');
+            eventTable.innerHTML = '';
+            events.forEach((event, index) => {
+                const row = document.createElement('tr');
+                row.classList.add('fade-in');
+                row.innerHTML = `
+                    <td>${event.title}</td>
+                    <td>${event.date}</td>
+                    <td>${event.time}</td>
+                    <td>${event.location}</td>
+                    <td class="admin-only" style="display: ${JSON.parse(localStorage.getItem('currentUser')).role === 'admin' ? 'table-cell' : 'none'};">
+                        <button class="small-cta" onclick="editEvent(${index})">Edit</button>
+                        <button class="small-cta" onclick="deleteEvent(${index})">Delete</button>
+                    </td>
+                `;
+                eventTable.appendChild(row);
+            });
+        }
 
-html.dark-mode .admin-section {
-    background-color: #2D2D44;
-}
+        // Add schedule
+        function addSchedule() {
+            const staff = document.getElementById('schedule-staff').value.trim();
+            const date = document.getElementById('schedule-date').value;
+            const time = document.getElementById('schedule-time').value;
+            const task = document.getElementById('schedule-task').value.trim();
+            if (staff && date && time && task) {
+                const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+                schedules.push({ staff, date, time, task });
+                localStorage.setItem('schedules', JSON.stringify(schedules));
+                loadTables();
+                clearForm('schedule');
+            } else {
+                alert('Please fill all fields.');
+            }
+        }
 
-.form-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-}
+        // Add event
+        function addEvent() {
+            const title = document.getElementById('event-title').value.trim();
+            const date = document.getElementById('event-date').value;
+            const time = document.getElementById('event-time').value;
+            const location = document.getElementById('event-location').value.trim();
+            if (title && date && time && location) {
+                const events = JSON.parse(localStorage.getItem('events')) || [];
+                events.push({ title, date, time, location });
+                localStorage.setItem('events', JSON.stringify(events));
+                loadTables();
+                clearForm('event');
+            } else {
+                alert('Please fill all fields.');
+            }
+        }
 
-.form-group input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    flex: 1;
-    min-width: 120px;
-    transition: border-color 0.3s;
-}
+        // Edit schedule
+        function editSchedule(index) {
+            const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+            const schedule = schedules[index];
+            document.getElementById('schedule-staff').value = schedule.staff;
+            document.getElementById('schedule-date').value = schedule.date;
+            document.getElementById('schedule-time').value = schedule.time;
+            document.getElementById('schedule-task').value = schedule.task;
+            schedules.splice(index, 1);
+            localStorage.setItem('schedules', JSON.stringify(schedules));
+            loadTables();
+        }
 
-.form-group input:focus {
-    border-color: #FFD700;
-    outline: none;
-}
+        // Delete schedule
+        function deleteSchedule(index) {
+            if (confirm('Are you sure you want to delete this schedule?')) {
+                const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+                schedules.splice(index, 1);
+                localStorage.setItem('schedules', JSON.stringify(schedules));
+                loadTables();
+            }
+        }
 
-.styled-table tr {
-    transition: transform 0.3s, opacity 0.3s;
-}
+        // Edit event
+        function editEvent(index) {
+            const events = JSON.parse(localStorage.getItem('events')) || [];
+            const event = events[index];
+            document.getElementById('event-title').value = event.title;
+            document.getElementById('event-date').value = event.date;
+            document.getElementById('event-time').value = event.time;
+            document.getElementById('event-location').value = event.location;
+            events.splice(index, 1);
+            localStorage.setItem('events', JSON.stringify(events));
+            loadTables();
+        }
 
-.styled-table tr.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
+        // Delete event
+        function deleteEvent(index) {
+            if (confirm('Are you sure you want to delete this event?')) {
+                const events = JSON.parse(localStorage.getItem('events')) || [];
+                events.splice(index, 1);
+                localStorage.setItem('events', JSON.stringify(events));
+                loadTables();
+            }
+        }
 
-/* Override mobile-specific styles to ensure hamburger menu on all devices */
-@media (max-width: 768px) {
-    .logo h1 {
-        font-size: 20px;
-    }
-    .nav-links {
-        top: 50px;
-    }
-}
+        // Clear form
+        function clearForm(type) {
+            const prefix = type === 'schedule' ? 'schedule-' : 'event-';
+            document.getElementById(`${prefix}staff`)?.value = '';
+            document.getElementById(`${prefix}title`)?.value = '';
+            document.getElementById(`${prefix}date`).value = '';
+            document.getElementById(`${prefix}time`).value = '';
+            document.getElementById(`${prefix}task`)?.value = '';
+            document.getElementById(`${prefix}location`)?.value = '';
+        }
+    </script>
+</body>
+</html>
