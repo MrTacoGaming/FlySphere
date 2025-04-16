@@ -692,6 +692,7 @@ html.dark-mode .admin-section {
         background: none;
         padding: 0;
         justify-content: flex-end;
+        margin-right: 10px;
     }
 
     .nav-links li {
@@ -699,7 +700,8 @@ html.dark-mode .admin-section {
     }
 
     .theme-toggle {
-        margin-left: 15px;
+        order: 2;
+        margin-left: 10px;
     }
 }
 
@@ -711,6 +713,7 @@ html.dark-mode .admin-section {
 
     nav {
         padding: 10px;
+        flex-wrap: wrap;
     }
 
     .logo h1 {
@@ -773,5 +776,15 @@ html.dark-mode .admin-section {
 
     section {
         padding: 20px;
+    }
+
+    .hamburger {
+        order: 1;
+        margin-left: auto;
+    }
+
+    .theme-toggle {
+        order: 2;
+        margin-left: 10px;
     }
 }

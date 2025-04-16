@@ -127,23 +127,35 @@
     <script>
         // Preloader
         function hidePreloader() {
+            console.log('Attempting to hide preloader');
             const preloader = document.getElementById('preloader');
             if (!sessionStorage.getItem('preloaderShown')) {
+                console.log('First load, fading out preloader');
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.classList.add('hidden');
                     sessionStorage.setItem('preloaderShown', 'true');
+                    console.log('Preloader hidden, calling checkSession');
                     checkSession();
                 }, 500);
             } else {
+                console.log('Preloader already shown, hiding immediately');
                 preloader.classList.add('hidden');
                 checkSession();
             }
         }
 
-        // Run preloader hide on load or after a short delay
-        window.addEventListener('load', hidePreloader);
-        setTimeout(hidePreloader, 2000); // Fallback to prevent infinite spinner
+        // Force hide preloader after 1.5s max
+        setTimeout(() => {
+            console.log('Fallback: Forcing preloader hide');
+            hidePreloader();
+        }, 1500);
+
+        // Run on load
+        window.addEventListener('load', () => {
+            console.log('Window loaded, hiding preloader');
+            hidePreloader();
+        });
 
         // Disable right-click and source view
         document.addEventListener('contextmenu', e => e.preventDefault());
@@ -178,12 +190,14 @@
 
         // Session management
         function checkSession() {
+            console.log('Checking session');
             const user = JSON.parse(localStorage.getItem('currentUser'));
             const loginSection = document.getElementById('login-section');
             const staffContent = document.getElementById('staff-content');
             const adminControls = document.getElementById('admin-controls');
             const adminOnly = document.querySelectorAll('.admin-only');
             if (user) {
+                console.log('User found, showing staff content');
                 loginSection.style.display = 'none';
                 staffContent.style.display = 'block';
                 if (user.role === 'admin') {
@@ -192,6 +206,7 @@
                 }
                 loadTables();
             } else {
+                console.log('No user, showing login');
                 loginSection.style.display = 'block';
                 staffContent.style.display = 'none';
             }
